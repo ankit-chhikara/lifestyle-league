@@ -9,31 +9,18 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* ── RESET ── */
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{font-size:16px}
-
-    /* ── THEME VARS ── */
     :root{
-      --bg:#060A06;
-      --bg2:#0C120C;
-      --bg3:#111811;
-      --border:#1C2A1C;
-      --border2:#243624;
-      --green:#2ECC71;
-      --green2:#27AE60;
-      --green-dim:#1A5C35;
-      --green-glow:rgba(46,204,113,0.15);
-      --amber:#F0B429;
-      --red:#E53E3E;
-      --text:#E8F5E9;
-      --text2:#A5C4A5;
-      --text3:#5A7A5A;
+      --bg:#060A06;--bg2:#0C120C;--bg3:#111811;
+      --border:#1C2A1C;--border2:#243624;
+      --green:#2ECC71;--green2:#27AE60;
+      --amber:#F0B429;--red:#E53E3E;
+      --text:#E8F5E9;--text2:#A5C4A5;--text3:#5A7A5A;
       --mono:'DM Mono',monospace;
       --serif:'DM Serif Display',Georgia,serif;
       --sans:'Sora',sans-serif;
     }
-
     body{
       min-height:100vh;background:var(--bg);color:var(--text);
       font-family:var(--sans);font-size:15px;line-height:1.5;
@@ -43,286 +30,152 @@
         repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(46,204,113,0.015) 39px,rgba(46,204,113,0.015) 40px),
         repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(46,204,113,0.015) 39px,rgba(46,204,113,0.015) 40px);
     }
-
     ::-webkit-scrollbar{width:4px}
     ::-webkit-scrollbar-track{background:var(--bg)}
     ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-
-    /* ── LAYOUT ── */
     #app{max-width:540px;margin:0 auto;padding:20px 16px 100px}
-
-    /* ── TYPOGRAPHY ── */
-    .serif{font-family:var(--serif)}
-    .mono{font-family:var(--mono)}
-    .green{color:var(--green)}
-    .amber{color:var(--amber)}
-    .muted{color:var(--text2)}
-    .dim{color:var(--text3)}
-
-    /* ── CARDS ── */
+    .serif{font-family:var(--serif)}.mono{font-family:var(--mono)}
+    .green{color:var(--green)}.amber{color:var(--amber)}.muted{color:var(--text2)}.dim{color:var(--text3)}
     .card{
       background:linear-gradient(135deg,rgba(12,18,12,0.98),rgba(8,12,8,0.99));
-      border:1px solid var(--border);border-radius:12px;
-      padding:20px;margin-bottom:14px;position:relative;overflow:hidden;
+      border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px;
+      position:relative;overflow:hidden;
     }
-    .card::before{
-      content:'';position:absolute;top:0;left:0;right:0;height:1px;
-      background:linear-gradient(90deg,transparent,rgba(46,204,113,0.2),transparent);
-    }
-    .card.glow{
-      border-color:rgba(46,204,113,0.25);
-      box-shadow:0 0 30px rgba(46,204,113,0.08),inset 0 0 40px rgba(46,204,113,0.02);
-    }
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(46,204,113,0.2),transparent)}
+    .card.glow{border-color:rgba(46,204,113,0.25);box-shadow:0 0 30px rgba(46,204,113,0.08),inset 0 0 40px rgba(46,204,113,0.02)}
     .card.warn{border-color:rgba(240,180,41,0.3);box-shadow:0 0 20px rgba(240,180,41,0.05)}
     .card.danger{border-color:rgba(229,62,62,0.25);box-shadow:0 0 20px rgba(229,62,62,0.05)}
-
-    /* ── BUTTONS ── */
     button{cursor:pointer;font-family:var(--sans);transition:all 0.18s}
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      padding:11px 20px;border-radius:9px;font-size:14px;font-weight:600;
-      border:none;width:100%;letter-spacing:0.01em;
-    }
-    .btn-primary{
-      background:linear-gradient(135deg,var(--green),var(--green2));
-      color:#030B03;box-shadow:0 4px 20px rgba(46,204,113,0.3);
-    }
-    .btn-primary:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 6px 24px rgba(46,204,113,0.4)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:9px;font-size:14px;font-weight:600;border:none;width:100%;letter-spacing:0.01em}
+    .btn-primary{background:linear-gradient(135deg,var(--green),var(--green2));color:#030B03;box-shadow:0 4px 20px rgba(46,204,113,0.3)}
+    .btn-primary:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px)}
     .btn-ghost{background:transparent;color:var(--green);border:1px solid var(--border2)}
     .btn-ghost:hover:not(:disabled){border-color:rgba(46,204,113,0.3);background:rgba(46,204,113,0.05)}
     .btn-danger{background:rgba(229,62,62,0.15);color:#FC8181;border:1px solid rgba(229,62,62,0.3)}
     .btn-warn{background:rgba(240,180,41,0.12);color:var(--amber);border:1px solid rgba(240,180,41,0.3)}
     .btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important}
     .btn-sm{padding:7px 14px;font-size:13px;width:auto}
-
-    /* ── INPUTS ── */
     input,select,textarea{
       width:100%;padding:11px 14px;border-radius:9px;
       background:rgba(255,255,255,0.03);border:1px solid var(--border);
-      color:var(--text);font-family:var(--sans);font-size:14px;
-      outline:none;transition:border-color 0.2s;
+      color:var(--text);font-family:var(--sans);font-size:14px;outline:none;transition:border-color 0.2s;
     }
     input:focus,select:focus,textarea:focus{border-color:rgba(46,204,113,0.3)}
     select{cursor:pointer}
     select option{background:#0C120C}
     textarea{resize:vertical;min-height:64px}
     input[type=number]{-moz-appearance:textfield}
-    input[type=number]::-webkit-outer-spin-button,
-    input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
-
-    /* ── FORM ── */
+    input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
     .field{margin-bottom:13px}
     .field label{display:block;color:var(--text3);font-size:11px;letter-spacing:0.1em;margin-bottom:6px;text-transform:uppercase}
-
-    /* ── TABS ── */
     .tabs{display:flex;gap:5px;margin-bottom:18px;background:rgba(0,0,0,0.3);padding:4px;border-radius:11px;border:1px solid var(--border)}
-    .tab{
-      flex:1;padding:9px 4px;border-radius:8px;font-size:12px;font-weight:600;
-      background:transparent;border:none;color:var(--text3);letter-spacing:0.01em;
-    }
+    .tab{flex:1;padding:9px 4px;border-radius:8px;font-size:12px;font-weight:600;background:transparent;border:none;color:var(--text3)}
     .tab.active{background:rgba(46,204,113,0.12);color:var(--green);border:1px solid rgba(46,204,113,0.2)}
-
-    /* ── SECTION LABEL ── */
     .slabel{font-size:10px;letter-spacing:0.12em;color:var(--text3);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
     .slabel::after{content:'';flex:1;height:1px;background:var(--border)}
-
-    /* ── SCORE DISPLAY ── */
-    .score-ring{
-      width:110px;height:110px;border-radius:50%;
-      background:conic-gradient(var(--green) calc(var(--pct)*1%),var(--bg3) 0);
-      display:flex;align-items:center;justify-content:center;
-      box-shadow:0 0 30px rgba(46,204,113,0.2);
-      position:relative;margin:0 auto;
-    }
-    .score-ring::before{
-      content:'';position:absolute;inset:8px;border-radius:50%;
-      background:var(--bg2);
-    }
+    .score-ring{width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;margin:0 auto;flex-shrink:0}
+    .score-ring::before{content:'';position:absolute;inset:8px;border-radius:50%;background:var(--bg2)}
     .score-ring .inner{position:relative;text-align:center;z-index:1}
-    .score-ring .pct-val{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--green);line-height:1}
+    .score-ring .pct-val{font-family:var(--mono);font-size:22px;font-weight:500;line-height:1}
     .score-ring .pct-lbl{font-size:10px;color:var(--text3);margin-top:2px}
-
-    /* ── STAT BOXES ── */
     .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
     .stat-box{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:13px 10px;text-align:center}
     .stat-box .sv{font-family:var(--mono);font-size:19px;color:var(--green);line-height:1.1}
     .stat-box .sl{font-size:10px;color:var(--text3);margin-top:3px;letter-spacing:0.05em}
     .stat-box .si{font-size:16px;margin-bottom:3px}
-
-    /* ── LEADERBOARD ── */
     .lb-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--border)}
     .lb-row:last-child{border-bottom:none}
     .lb-pos{width:28px;text-align:center;font-family:var(--mono);font-size:14px;font-weight:500}
-    .lb-info{flex:1}
-    .lb-name{font-size:15px;font-weight:600;color:var(--text)}
+    .lb-info{flex:1;min-width:0}
+    .lb-name{font-size:15px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .lb-sub{font-size:11px;color:var(--text3);margin-top:2px}
-    .lb-score{text-align:right}
+    .lb-score{text-align:right;flex-shrink:0}
     .lb-pts{font-family:var(--mono);font-size:18px;color:var(--green);font-weight:500}
     .lb-meta{font-size:11px;color:var(--text3)}
-
-    /* ── ENTRY LOG ── */
     .entry-row{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:1px solid var(--border)}
     .entry-row:last-child{border-bottom:none}
-    .entry-month{
-      background:rgba(46,204,113,0.07);border:1px solid var(--border2);
-      border-radius:8px;padding:8px 10px;min-width:58px;text-align:center;
-      font-size:11px;color:var(--text3)
-    }
-    .entry-month .epts{color:var(--green);font-family:var(--mono);font-weight:500;font-size:14px;margin-top:2px}
-    .entry-detail{flex:1}
-    .entry-name{font-size:14px;font-weight:600;color:var(--text)}
+    .entry-month{background:rgba(46,204,113,0.07);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;min-width:58px;text-align:center;font-size:11px;color:var(--text3);flex-shrink:0}
+    .entry-month .epts{font-family:var(--mono);font-weight:500;font-size:14px;margin-top:2px}
+    .entry-detail{flex:1;min-width:0}
+    .entry-name{font-size:14px;font-weight:600}
     .entry-nums{font-size:12px;color:var(--text3);margin-top:3px;font-family:var(--mono)}
-
-    /* ── BADGES ── */
     .badge-wrap{display:flex;flex-wrap:wrap;gap:8px}
-    .badge{
-      display:flex;flex-direction:column;align-items:center;
-      padding:10px 10px 8px;border-radius:10px;min-width:70px;
-      border:1px solid var(--border);transition:all 0.3s;
-    }
+    .badge{display:flex;flex-direction:column;align-items:center;padding:10px 10px 8px;border-radius:10px;min-width:70px;border:1px solid var(--border);transition:all 0.3s}
     .badge.earned{background:rgba(46,204,113,0.06);border-color:rgba(46,204,113,0.2)}
     .badge.locked{opacity:0.28}
     .badge .bico{font-size:20px}
     .badge .bnm{font-size:10px;color:var(--text3);margin-top:4px;text-align:center;max-width:66px;line-height:1.3}
-
-    /* ── TOKEN PILLS ── */
-    .token-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-    .token{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;
-      border:1px solid var(--border2);color:var(--text2);background:var(--bg3);
-    }
+    .token{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid var(--border2);color:var(--text2);background:var(--bg3)}
     .token.active{background:rgba(46,204,113,0.1);border-color:rgba(46,204,113,0.3);color:var(--green)}
-    .token.used{opacity:0.35;text-decoration:line-through}
-
-    /* ── PROGRESS BAR ── */
-    .prog-wrap{margin:8px 0}
-    .prog-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:5px}
-    .prog-track{background:var(--bg3);border-radius:4px;height:6px;border:1px solid var(--border)}
-    .prog-fill{height:100%;border-radius:4px;transition:width 0.8s ease}
-
-    /* ── DIVIDER ── */
     hr{border:none;border-top:1px solid var(--border);margin:14px 0}
-
-    /* ── RULE ROWS ── */
     .rule-row{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
     .rule-row:last-child{border-bottom:none}
     .rule-key{color:var(--text2);flex:1;padding-right:12px}
     .rule-val{color:var(--green);font-family:var(--mono);font-size:12px;text-align:right;flex-shrink:0}
-
-    /* ── TOAST ── */
-    #toast{
-      position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
-      background:linear-gradient(135deg,var(--green),var(--green2));color:#030B03;
-      padding:11px 22px;border-radius:50px;font-weight:700;font-size:14px;
-      transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
-      pointer-events:none;white-space:nowrap;z-index:999;
-      box-shadow:0 8px 32px rgba(46,204,113,0.35);
-    }
+    .month-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+    .month-btn{padding:8px 4px;border-radius:7px;font-size:12px;font-weight:600;background:transparent;border:1px solid var(--border);color:var(--text3)}
+    .month-btn.sel{background:rgba(46,204,113,0.1);border-color:rgba(46,204,113,0.3);color:var(--green)}
+    .pu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+    .pu-btn{padding:10px 12px;border-radius:9px;font-size:12px;font-weight:600;background:transparent;border:1px solid var(--border);color:var(--text3);text-align:left;display:flex;align-items:center;gap:8px}
+    .pu-btn.active{background:rgba(46,204,113,0.08);border-color:rgba(46,204,113,0.25);color:var(--green)}
+    .pu-btn.amber-active{background:rgba(240,180,41,0.08);border-color:rgba(240,180,41,0.3);color:var(--amber)}
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+    .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:24px;max-width:340px;width:100%}
+    #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:linear-gradient(135deg,var(--green),var(--green2));color:#030B03;padding:11px 22px;border-radius:50px;font-weight:700;font-size:14px;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;white-space:nowrap;z-index:999;box-shadow:0 8px 32px rgba(46,204,113,0.35)}
     #toast.show{transform:translateX(-50%) translateY(0)}
     #toast.warn{background:linear-gradient(135deg,var(--amber),#C07A00);color:#1A1000}
-
-    /* ── SPINNER ── */
-    .spinner{
-      width:30px;height:30px;border:2px solid var(--border2);
-      border-top-color:var(--green);border-radius:50%;
-      animation:spin 0.75s linear infinite;margin:0 auto;
-    }
+    .spinner{width:30px;height:30px;border:2px solid var(--border2);border-top-color:var(--green);border-radius:50%;animation:spin 0.75s linear infinite;margin:0 auto}
     @keyframes spin{to{transform:rotate(360deg)}}
-
-    /* ── SETUP BANNER ── */
-    .setup-banner{
-      background:rgba(46,204,113,0.05);border:1px solid rgba(46,204,113,0.2);
-      border-radius:12px;padding:16px 18px;margin-bottom:20px;
-      font-size:13px;line-height:1.7;color:var(--text2);
-    }
+    .setup-banner{background:rgba(46,204,113,0.05);border:1px solid rgba(46,204,113,0.2);border-radius:12px;padding:16px 18px;margin-bottom:20px;font-size:13px;line-height:1.7;color:var(--text2)}
     .setup-banner code{background:rgba(46,204,113,0.1);padding:2px 7px;border-radius:4px;color:var(--green);font-family:var(--mono);font-size:12px}
-
-    /* ── WELCOME FEATURES ── */
     .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:28px}
     .feat-box{text-align:center;padding:16px 8px;background:rgba(46,204,113,0.03);border:1px solid var(--border);border-radius:12px}
     .feat-box .fco{font-size:24px}
     .feat-box .flb{font-size:11px;color:var(--text3);margin-top:6px}
-
-    /* ── MONTH PICKER ── */
-    .month-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
-    .month-btn{
-      padding:8px 4px;border-radius:7px;font-size:12px;font-weight:600;
-      background:transparent;border:1px solid var(--border);color:var(--text3);
-    }
-    .month-btn.sel{background:rgba(46,204,113,0.1);border-color:rgba(46,204,113,0.3);color:var(--green)}
-
-    /* ── POWERUP SECTION ── */
-    .pu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-    .pu-btn{
-      padding:10px 12px;border-radius:9px;font-size:12px;font-weight:600;
-      background:transparent;border:1px solid var(--border);color:var(--text3);
-      text-align:left;display:flex;align-items:center;gap:8px;
-    }
-    .pu-btn.active{background:rgba(46,204,113,0.08);border-color:rgba(46,204,113,0.25);color:var(--green)}
-    .pu-btn.amber-active{background:rgba(240,180,41,0.08);border-color:rgba(240,180,41,0.3);color:var(--amber)}
-
-    /* ── MODALS (confirm) ── */
-    .overlay{
-      position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;
-      display:flex;align-items:center;justify-content:center;padding:20px;
-    }
-    .modal{
-      background:var(--bg2);border:1px solid var(--border2);border-radius:16px;
-      padding:24px;max-width:340px;width:100%;
-    }
+    .year-tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+    .year-tab{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;background:transparent;border:1px solid var(--border);color:var(--text3)}
+    .year-tab.active{background:rgba(46,204,113,0.1);border-color:rgba(46,204,113,0.3);color:var(--green)}
   </style>
 </head>
 <body>
 <div id="app"></div>
 <div id="toast"></div>
-
 <script>
-/* ════════════════════════════════════════════════════════════
-   LIFESTYLE LEAGUE — Configuration
-   
-   STEP 1: Go to https://supabase.com → New Project
-   STEP 2: Settings → API → copy Project URL and anon key
-   STEP 3: Paste below, then deploy to GitHub + Vercel
-   ════════════════════════════════════════════════════════════ */
-
+/* ══════════════════════════════════════════════════════
+   CONFIGURATION — paste your Supabase values here
+   ══════════════════════════════════════════════════════ */
 const SUPABASE_URL      = "https://vstglnhzcbnrbzpdapeu.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzdGdsbmh6Y2JucmJ6cGRhcGV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3MDIzMDQsImV4cCI6MjA5MjI3ODMwNH0.7oYndkt-Y5Yp1863ZW8Q7t0lrmANNFMSo4KkW-c-nIk";
+/* ══════════════════════════════════════════════════════ */
 
-/* ════════════════════════════════════════════════════════════ */
+const IS_CONFIGURED = SUPABASE_URL !== "https://vstglnhzcbnrbzpdapeu.supabase.co";
 
-const IS_CONFIGURED = SUPABASE_URL !== "YOUR_SUPABASE_URL";
-
-// ── CONSTANTS ────────────────────────────────────────────────
-
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+// ── CONSTANTS ──────────────────────────────────────────
+const MONTHS_ARR = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 const BADGES_DEF = [
-  {id:'first_entry',  ico:'🌱', name:'First Blood',    desc:'Submitted first month'},
-  {id:'hustle_1',     ico:'⚡', name:'Hustler',        desc:'50%+ score in a month'},
-  {id:'hustle_3',     ico:'🔥', name:'Triple Hustle',  desc:'3 months of 50%+ scores'},
-  {id:'streak_3',     ico:'📅', name:'Consistent',     desc:'3-month streak'},
-  {id:'streak_6',     ico:'🗓️', name:'Half Year',      desc:'6-month streak'},
-  {id:'streak_12',    ico:'👑', name:'Full Year',      desc:'12-month streak'},
-  {id:'resilience',   ico:'💪', name:'Resilient',      desc:'Used Resilience bonus'},
-  {id:'investor',     ico:'📈', name:'Investor',       desc:'Earned Investor Bonus'},
-  {id:'debt_killer',  ico:'⚔️', name:'Debt Killer',    desc:'Paid extra debt'},
-  {id:'score_100',    ico:'💯', name:'Perfect Month',  desc:'100% score in a month'},
-  {id:'pts_10',       ico:'🥈', name:'10 Points',      desc:'10 total points earned'},
-  {id:'pts_25',       ico:'🥇', name:'25 Points',      desc:'25 total points earned'},
+  {id:'first_entry', ico:'🌱', name:'First Blood',     desc:'Submitted first month'},
+  {id:'hustle_1',    ico:'⚡', name:'Hustler',         desc:'50%+ score in a month'},
+  {id:'hustle_3',    ico:'🔥', name:'Triple Hustle',   desc:'3 months of 50%+ scores'},
+  {id:'streak_3',    ico:'📅', name:'Consistent',      desc:'3-month streak'},
+  {id:'streak_6',    ico:'🗓️', name:'Half Year',       desc:'6-month streak'},
+  {id:'streak_12',   ico:'👑', name:'Full Year',       desc:'12-month streak'},
+  {id:'resilience',  ico:'💪', name:'Resilient',       desc:'Used Resilience bonus'},
+  {id:'investor',    ico:'📈', name:'Investor',        desc:'Earned Investor Bonus'},
+  {id:'debt_killer', ico:'⚔️', name:'Debt Killer',     desc:'Paid extra debt'},
+  {id:'score_100',   ico:'💯', name:'Perfect Month',   desc:'100% score in a month'},
+  {id:'pts_10',      ico:'🥈', name:'10 Points',       desc:'10 total points earned'},
+  {id:'pts_25',      ico:'🥇', name:'25 Points',       desc:'25 total points earned'},
 ];
 
 const TOKENS = [
-  {id:'health',  ico:'🏥', name:'HealthShield',  desc:'Skip 1 month due to medical expense'},
-  {id:'yearly',  ico:'✈️', name:'YearlyPass',    desc:'Skip 1 month for annual planned expense'},
-  {id:'bigbuy1', ico:'🛍️', name:'BigBuy #1',     desc:'Skip 1 month for a big purchase (2×/yr)'},
-  {id:'bigbuy2', ico:'🛍️', name:'BigBuy #2',     desc:'2nd big purchase token for the year'},
+  {id:'health',  ico:'🏥', name:'HealthShield', desc:'Skip 1 month — medical expense'},
+  {id:'yearly',  ico:'✈️', name:'YearlyPass',   desc:'Skip 1 month — annual planned expense'},
+  {id:'bigbuy1', ico:'🛍️', name:'BigBuy #1',    desc:'Skip 1 month — big purchase'},
+  {id:'bigbuy2', ico:'🛍️', name:'BigBuy #2',    desc:'2nd big purchase token'},
 ];
 
-const MONTHS_ARR = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-// ── UTILS ────────────────────────────────────────────────────
-
+// ── UTILS ──────────────────────────────────────────────
 function thisMonth() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
@@ -330,72 +183,65 @@ function thisMonth() {
 
 function monthLabel(ym) {
   if (!ym) return '';
-  const [y,m] = ym.split('-');
-  return `${MONTHS[+m-1]} ${y}`;
+  const parts = ym.split('-');
+  if (parts.length < 2) return ym;
+  const y = parts[0], m = parseInt(parts[1], 10);
+  if (isNaN(m) || m < 1 || m > 12) return ym;
+  return `${MONTHS_ARR[m-1]} ${y}`;
 }
 
 function calcScore(savings, choiceMoney) {
-  if (!choiceMoney || choiceMoney <= 0) return 0;
-  return Math.min(100, Math.round((savings / choiceMoney) * 100));
+  const s = Number(savings) || 0;
+  const c = Number(choiceMoney) || 0;
+  if (c <= 0) return 0;
+  return Math.min(100, Math.max(0, Math.round((s / c) * 100)));
 }
 
 function calcPoints(entry) {
-  // Base: 1 pt if score >= 1%
+  if (!entry) return 0;
   let pts = 0;
   const score = calcScore(entry.savings, entry.choice_money);
   if (score >= 1) pts += 1;
-
-  // Power-ups
-  if (entry.pu_streak)     pts += 1;       // Streak +1
-  if (entry.pu_hustle && score >= 50) pts += 0.5;  // Hustle +0.5
-  if (entry.pu_resilience) pts += 2;       // Resilience +2
-  if (entry.investor_bonus) pts += 0.2;    // Investor Bonus
-
-  // Penalties
-  if (entry.interest_paid) pts -= 0.5;     // Interest penalty
-
-  // Debt Snowball: pre-existing debt repayment counts (already in savings)
-  // Infant Sabbatical: 1% compliance = 1pt
+  if (entry.pu_streak)                    pts += 1;
+  if (entry.pu_hustle && score >= 50)     pts += 0.5;
+  if (entry.pu_resilience)               pts += 2;
+  if (entry.investor_bonus)              pts += 0.2;
+  if (entry.interest_paid)               pts -= 0.5;
   if (entry.sabbatical_mode && entry.sabbatical_pct != null) {
-    pts = entry.sabbatical_pct / 100;
+    pts = Number(entry.sabbatical_pct) / 100;
   }
-  // Token used = neutral (no penalty, no point)
   if (entry.token_used) pts = 0;
-
-  // Lifestyle Creep penalty: if choice_money > 5000, must hit 40% min
-  if (entry.choice_money > 5000 && score < 40 && !entry.token_used) pts = 0;
-
+  if (Number(entry.choice_money) > 5000 && score < 40 && !entry.token_used) pts = 0;
   return Math.round(pts * 10) / 10;
 }
 
 function totalPoints(entries) {
-  return Math.round(entries.reduce((s,e)=>s+calcPoints(e),0)*10)/10;
+  if (!Array.isArray(entries) || !entries.length) return 0;
+  return Math.round(entries.reduce((s,e) => s + calcPoints(e), 0) * 10) / 10;
 }
 
 function calcStreak(entries) {
-  // count consecutive months with points > 0 ending at latest entry
-  if (!entries.length) return 0;
-  const sorted = [...entries].sort((a,b)=>b.month.localeCompare(a.month));
+  if (!Array.isArray(entries) || !entries.length) return 0;
+  const sorted = [...entries].sort((a,b) => b.month.localeCompare(a.month));
   let streak = 0;
-  let expected = sorted[0].month;
+  let [y, m] = sorted[0].month.split('-').map(Number);
   for (const e of sorted) {
-    if (e.month !== expected) break;
+    const [ey, em] = e.month.split('-').map(Number);
+    if (ey !== y || em !== m) break;
     if (calcPoints(e) > 0 || e.token_used) streak++;
     else break;
-    // go back 1 month
-    const [y,m] = expected.split('-').map(Number);
-    const prev = m === 1 ? `${y-1}-12` : `${y}-${String(m-1).padStart(2,'0')}`;
-    expected = prev;
+    m--;
+    if (m === 0) { m = 12; y--; }
   }
   return streak;
 }
 
 function calcBadges(entries) {
+  if (!Array.isArray(entries)) return [];
   const pts   = totalPoints(entries);
   const streak = calcStreak(entries);
-  const hustleMonths = entries.filter(e => calcScore(e.savings,e.choice_money) >= 50).length;
-  const maxScore = entries.length ? Math.max(...entries.map(e=>calcScore(e.savings,e.choice_money))) : 0;
-
+  const hustleMonths = entries.filter(e => calcScore(e.savings, e.choice_money) >= 50).length;
+  const maxScore = entries.length ? Math.max(...entries.map(e => calcScore(e.savings, e.choice_money))) : 0;
   return BADGES_DEF.filter(b => {
     switch(b.id) {
       case 'first_entry':  return entries.length >= 1;
@@ -404,9 +250,9 @@ function calcBadges(entries) {
       case 'streak_3':     return streak >= 3;
       case 'streak_6':     return streak >= 6;
       case 'streak_12':    return streak >= 12;
-      case 'resilience':   return entries.some(e=>e.pu_resilience);
-      case 'investor':     return entries.some(e=>e.investor_bonus);
-      case 'debt_killer':  return entries.some(e=>e.debt_killer_bonus);
+      case 'resilience':   return entries.some(e => e.pu_resilience);
+      case 'investor':     return entries.some(e => e.investor_bonus);
+      case 'debt_killer':  return entries.some(e => e.debt_killer_bonus);
       case 'score_100':    return maxScore >= 100;
       case 'pts_10':       return pts >= 10;
       case 'pts_25':       return pts >= 25;
@@ -415,403 +261,397 @@ function calcBadges(entries) {
   });
 }
 
-function fmt(n) {
-  if (n == null || n === '') return '—';
-  if (Math.abs(n) >= 1000) return (n/1000).toFixed(1)+'k';
-  return n.toString();
-}
-
 function fmtCurrency(n) {
-  if (n == null) return '—';
-  return new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(n);
+  const num = Number(n);
+  if (isNaN(num)) return '—';
+  return new Intl.NumberFormat('en-IN', {style:'currency', currency:'INR', maximumFractionDigits:0}).format(num);
 }
 
-// ── TOAST ────────────────────────────────────────────────────
-
+// ── TOAST ──────────────────────────────────────────────
 let toastTimer;
 function showToast(msg, warn=false) {
   const t = document.getElementById('toast');
+  if (!t) return;
   t.textContent = msg;
   t.className = warn ? 'warn show' : 'show';
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>{ t.className = warn?'warn':''; }, 2800);
+  toastTimer = setTimeout(() => { t.className = warn ? 'warn' : ''; }, 2800);
 }
 
-// ── SUPABASE ─────────────────────────────────────────────────
-
+// ── SUPABASE ───────────────────────────────────────────
 let db = null;
 
 async function initDB() {
   if (!IS_CONFIGURED) return;
-  try { db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e) { console.error(e); }
+  try { db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
+  catch(e) { console.error('Supabase init failed:', e); }
+}
+
+async function safeQuery(fn) {
+  try { return await fn(); }
+  catch(e) { console.error('DB error:', e); return null; }
 }
 
 async function dbFetchPlayers() {
-  if (!db) return [];
-  const {data} = await db.from('ll_players').select('*').order('name');
-  return data || [];
+  const r = await safeQuery(() => db.from('ll_players').select('*').order('name'));
+  return r?.data || [];
 }
-
-async function dbFetchEntries(playerId) {
-  if (!db) return [];
-  const {data} = await db.from('ll_entries').select('*').eq('player_id',playerId).order('month',{ascending:false});
-  return data || [];
-}
-
-async function dbFetchAllEntries() {
-  if (!db) return [];
-  const {data} = await db.from('ll_entries').select('*');
-  return data || [];
-}
-
 async function dbFetchAllPlayers() {
-  if (!db) return [];
-  const {data} = await db.from('ll_players').select('*');
-  return data || [];
+  const r = await safeQuery(() => db.from('ll_players').select('*'));
+  return r?.data || [];
 }
-
+async function dbFetchEntries(pid) {
+  const r = await safeQuery(() => db.from('ll_entries').select('*').eq('player_id', pid).order('month', {ascending:false}));
+  return r?.data || [];
+}
+async function dbFetchAllEntries() {
+  const r = await safeQuery(() => db.from('ll_entries').select('*'));
+  return r?.data || [];
+}
 async function dbCreatePlayer(name, currency='₹') {
   if (!db) return null;
-  const {data,error} = await db.from('ll_players').insert({name,currency}).select().single();
+  const {data, error} = await db.from('ll_players').insert({name, currency}).select().single();
   if (error) throw error;
   return data;
 }
-
 async function dbInsertEntry(entry) {
   if (!db) return;
   const {error} = await db.from('ll_entries').insert(entry);
   if (error) throw error;
 }
-
 async function dbDeleteEntry(id) {
-  if (!db) return;
-  await db.from('ll_entries').delete().eq('id',id);
+  await safeQuery(() => db.from('ll_entries').delete().eq('id', id));
+}
+async function dbDeleteAllEntries(pid) {
+  await safeQuery(() => db.from('ll_entries').delete().eq('player_id', pid));
+}
+async function dbDeletePlayer(pid) {
+  await safeQuery(() => db.from('ll_players').delete().eq('id', pid));
 }
 
-async function dbDeleteAllEntries(playerId) {
-  if (!db) return;
-  await db.from('ll_entries').delete().eq('player_id',playerId);
-}
-
-async function dbDeletePlayer(playerId) {
-  if (!db) return;
-  await db.from('ll_players').delete().eq('id',playerId);
-}
-
-// ── STATE ────────────────────────────────────────────────────
+// ── STATE ──────────────────────────────────────────────
+const EMPTY_FORM = () => ({
+  month: thisMonth(),
+  income:'', fixed_costs:'', savings:'', adj_savings:'',
+  pu_streak:false, pu_hustle:false, pu_resilience:false,
+  investor_bonus:false, debt_killer_bonus:false, interest_paid:false,
+  token_used:'', sabbatical_mode:false, sabbatical_pct:'', notes:'',
+});
 
 let S = {
   view: 'welcome',
   tab: 'home',
+  logYear: new Date().getFullYear(),
   player: null,
-  players: [],
   allPlayers: [],
   entries: [],
   allEntries: [],
   loading: false,
-  logForm: {
-    month: thisMonth(),
-    income: '', fixed_costs: '', savings: '',
-    adj_savings: '',
-    pu_streak: false,
-    pu_hustle: false,
-    pu_resilience: false,
-    investor_bonus: false,
-    debt_killer_bonus: false,
-    interest_paid: false,
-    token_used: '',
-    sabbatical_mode: false,
-    sabbatical_pct: '',
-    notes: '',
-  },
+  logForm: EMPTY_FORM(),
   confirm: null,
 };
 
 function SS(patch) {
-  Object.assign(S, typeof patch==='function' ? patch(S) : patch);
+  Object.assign(S, typeof patch === 'function' ? patch(S) : patch);
   render();
 }
 
-// ── EVENT HANDLERS ───────────────────────────────────────────
+// ── ACTIONS ────────────────────────────────────────────
+async function refreshAll(pid) {
+  const [entries, allEntries, allPlayers] = await Promise.all([
+    dbFetchEntries(pid),
+    dbFetchAllEntries(),
+    dbFetchAllPlayers(),
+  ]);
+  return { entries, allEntries, allPlayers };
+}
 
 async function doJoin(name, currency) {
   SS({loading:true});
   try {
     const p = await dbCreatePlayer(name, currency);
-    if (!p) { showToast('❌ Check Supabase config',true); SS({loading:false}); return; }
+    if (!p) { showToast('❌ Check Supabase config', true); SS({loading:false}); return; }
     localStorage.setItem('ll_pid', p.id);
     localStorage.setItem('ll_pname', p.name);
-    const entries = await dbFetchEntries(p.id);
-    const allEntries = await dbFetchAllEntries();
-    const allPlayers = await dbFetchAllPlayers();
-    SS({player:p, entries, allEntries, allPlayers, view:'dashboard', loading:false});
+    const data = await refreshAll(p.id);
+    SS({player:p, ...data, view:'dashboard', loading:false});
     showToast(`💰 Welcome, ${p.name}!`);
-  } catch(e) { showToast('❌ '+e.message,true); SS({loading:false}); }
+  } catch(e) { showToast('❌ ' + e.message, true); SS({loading:false}); }
 }
 
 async function doResume(id, name) {
   SS({loading:true});
-  const entries = await dbFetchEntries(id);
-  const allEntries = await dbFetchAllEntries();
-  const allPlayers = await dbFetchAllPlayers();
-  const players = await dbFetchPlayers();
-  SS({player:{id,name}, players, allPlayers, entries, allEntries, view:'dashboard', loading:false});
+  const data = await refreshAll(id);
+  SS({player:{id, name}, ...data, view:'dashboard', loading:false});
+}
+
+async function doAddPlayer(name, currency) {
+  SS({loading:true});
+  try {
+    const p = await dbCreatePlayer(name, currency);
+    if (!p) throw new Error('Failed to create player');
+    localStorage.setItem('ll_pid', p.id);
+    localStorage.setItem('ll_pname', p.name);
+    const data = await refreshAll(p.id);
+    SS({player:p, ...data, loading:false, tab:'home'});
+    showToast(`💰 Switched to ${p.name}`);
+  } catch(e) { showToast('❌ ' + e.message, true); SS({loading:false}); }
+}
+
+async function doSwitchPlayer(pid) {
+  const p = S.allPlayers.find(x => x.id === pid);
+  if (!p) return;
+  localStorage.setItem('ll_pid', p.id);
+  localStorage.setItem('ll_pname', p.name);
+  SS({loading:true});
+  const data = await refreshAll(p.id);
+  SS({player:p, ...data, loading:false, tab:'home'});
+  showToast(`Switched to ${p.name}`);
 }
 
 async function doLogEntry() {
   const {player, logForm} = S;
-  const income = parseFloat(logForm.income)||0;
-  const fixed  = parseFloat(logForm.fixed_costs)||0;
+  const income = parseFloat(logForm.income) || 0;
+  const fixed  = parseFloat(logForm.fixed_costs) || 0;
   const choiceMoney = income - fixed;
-  const rawSav = parseFloat(logForm.savings)||0;
-  const adjSav = logForm.adj_savings !== '' ? parseFloat(logForm.adj_savings)||0 : rawSav;
+  const rawSav = parseFloat(logForm.savings) || 0;
+  const adjSav = logForm.adj_savings !== '' ? (parseFloat(logForm.adj_savings) || 0) : rawSav;
 
-  if (!logForm.month) { showToast('Pick a month',true); return; }
-  if (!logForm.token_used && !logForm.sabbatical_mode && (income<=0||fixed<0)) {
-    showToast('Enter income & fixed costs',true); return;
+  if (!logForm.month) { showToast('Pick a month', true); return; }
+  if (!logForm.token_used && !logForm.sabbatical_mode) {
+    if (income <= 0) { showToast('Enter your income', true); return; }
   }
 
   const entry = {
     player_id: player.id,
     month: logForm.month,
-    income, fixed_costs: fixed,
-    choice_money: choiceMoney,
-    savings: adjSav,
-    pu_streak: logForm.pu_streak,
-    pu_hustle: logForm.pu_hustle,
-    pu_resilience: logForm.pu_resilience,
-    investor_bonus: logForm.investor_bonus,
-    debt_killer_bonus: logForm.debt_killer_bonus,
-    interest_paid: logForm.interest_paid,
+    income, fixed_costs: fixed, choice_money: choiceMoney, savings: adjSav,
+    pu_streak: !!logForm.pu_streak,
+    pu_hustle: !!logForm.pu_hustle,
+    pu_resilience: !!logForm.pu_resilience,
+    investor_bonus: !!logForm.investor_bonus,
+    debt_killer_bonus: !!logForm.debt_killer_bonus,
+    interest_paid: !!logForm.interest_paid,
     token_used: logForm.token_used || null,
-    sabbatical_mode: logForm.sabbatical_mode,
-    sabbatical_pct: logForm.sabbatical_pct !== '' ? parseFloat(logForm.sabbatical_pct) : null,
-    notes: logForm.notes,
+    sabbatical_mode: !!logForm.sabbatical_mode,
+    sabbatical_pct: logForm.sabbatical_pct !== '' ? (parseFloat(logForm.sabbatical_pct) || null) : null,
+    notes: logForm.notes || '',
   };
 
   SS({loading:true});
   try {
     await dbInsertEntry(entry);
-    const entries = await dbFetchEntries(player.id);
-    const allEntries = await dbFetchAllEntries();
-    const allPlayers = await dbFetchAllPlayers();
     const pts = calcPoints(entry);
-    SS({entries, allEntries, allPlayers, view:'dashboard', tab:'home', loading:false,
-      logForm:{...S.logForm, notes:'', pu_streak:false, pu_hustle:false,
-        pu_resilience:false, investor_bonus:false, debt_killer_bonus:false,
-        interest_paid:false, token_used:'', sabbatical_mode:false, sabbatical_pct:''}});
-    showToast(`✅ +${pts} pts logged for ${monthLabel(entry.month)}`);
-  } catch(e) { showToast('❌ '+e.message,true); SS({loading:false}); }
+    const data = await refreshAll(player.id);
+    SS({...data, view:'dashboard', tab:'home', loading:false, logForm: EMPTY_FORM()});
+    showToast(`✅ +${pts} pts for ${monthLabel(entry.month)}`);
+  } catch(e) { showToast('❌ ' + e.message, true); SS({loading:false}); }
 }
 
 async function doDeleteEntry(id) {
-  SS({loading:true});
+  SS({loading:true, confirm:null});
   await dbDeleteEntry(id);
-  const entries = await dbFetchEntries(S.player.id);
-  const allEntries = await dbFetchAllEntries();
-  const allPlayers = await dbFetchAllPlayers();
-  SS({entries, allEntries, allPlayers, loading:false, confirm:null});
+  const data = await refreshAll(S.player.id);
+  SS({...data, loading:false});
   showToast('✅ Entry deleted');
 }
 
 async function doDeleteAllEntries(pid) {
-  SS({loading:true});
+  SS({loading:true, confirm:null});
   await dbDeleteAllEntries(pid);
-  const entries = pid===S.player.id ? [] : S.entries;
-  const allEntries = await dbFetchAllEntries();
-  const allPlayers = await dbFetchAllPlayers();
-  SS({entries, allEntries, allPlayers, loading:false, confirm:null});
+  const data = await refreshAll(S.player.id);
+  SS({...data, loading:false});
   showToast('✅ All entries cleared');
 }
 
 async function doDeletePlayer(pid) {
-  SS({loading:true});
+  SS({loading:true, confirm:null});
   await dbDeletePlayer(pid);
-  if (pid===S.player.id) {
+  if (pid === S.player.id) {
     localStorage.removeItem('ll_pid');
     localStorage.removeItem('ll_pname');
-    SS({player:null, entries:[], view:'welcome', loading:false, confirm:null});
+    SS({player:null, entries:[], allEntries:[], allPlayers:[], view:'welcome', loading:false});
   } else {
-    const allEntries = await dbFetchAllEntries();
-    const players = await dbFetchPlayers();
-    const allPlayers = await dbFetchAllPlayers();
-    SS({players, allPlayers, allEntries, loading:false, confirm:null});
+    const data = await refreshAll(S.player.id);
+    SS({...data, loading:false});
   }
   showToast('✅ Player removed');
 }
 
-async function doSwitchPlayer(pid) {
-  const all = await dbFetchAllPlayers();
-  const p = all.find(x=>x.id===pid);
-  if (!p) return;
-  localStorage.setItem('ll_pid', p.id);
-  localStorage.setItem('ll_pname', p.name);
-  const entries = await dbFetchEntries(p.id);
-  const allPlayers = await dbFetchAllPlayers();
-  SS({player:p, entries, allPlayers, tab:'home'});
-  showToast(`Switched to ${p.name}`);
-}
-
-// ── DOM HELPERS ──────────────────────────────────────────────
-
+// ── DOM HELPER ─────────────────────────────────────────
+// Hardened: numbers/booleans auto-convert, nulls skip, arrays flatten
 function el(tag, attrs={}, ...children) {
   const e = document.createElement(tag);
-  for (const [k,v] of Object.entries(attrs)) {
-    if (k==='class') e.className=v;
-    else if (k.startsWith('on')) e[k]=v;
-    else if (k==='style') Object.assign(e.style, typeof v==='string'?{cssText:v}:v);
-    else if (k==='html') e.innerHTML=v;
-    else e.setAttribute(k,v);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (v === null || v === undefined) continue;
+    if (k === 'class')          e.className = v;
+    else if (k.startsWith('on')) e[k] = v;
+    else if (k === 'style')     Object.assign(e.style, typeof v === 'string' ? {cssText:v} : v);
+    else if (k === 'html')      e.innerHTML = v;
+    else                        e.setAttribute(k, v);
   }
-  for (const c of children.flat()) {
-    if (c==null||c===false||c===undefined) continue;
-    if (c instanceof Node) e.appendChild(c);
-    else e.appendChild(document.createTextNode(String(c)));
+  function append(c) {
+    if (c == null || c === false || c === undefined) return;
+    if (Array.isArray(c))   { c.forEach(append); return; }
+    if (c instanceof Node)  { e.appendChild(c); return; }
+    e.appendChild(document.createTextNode(String(c)));
   }
+  children.forEach(append);
   return e;
 }
 
-function confirm$(msg, onYes) { SS({confirm:{msg,onYes}}); }
+function confirm$(msg, onYes) { SS({confirm:{msg, onYes}}); }
 
-function renderConfirm() {
-  const {confirm} = S;
-  if (!confirm) return null;
-  return el('div',{class:'overlay'},
-    el('div',{class:'modal'},
-      el('div',{style:'font-size:15px;color:#E8F5E9;margin-bottom:16px;line-height:1.5'}, confirm.msg),
-      el('div',{style:'display:flex;gap:10px'},
-        el('button',{class:'btn btn-danger btn-sm', style:'flex:1',
-          onclick:()=>{ SS({confirm:null}); confirm.onYes(); }}, 'Yes, delete'),
-        el('button',{class:'btn btn-ghost btn-sm', style:'flex:1',
-          onclick:()=>SS({confirm:null})}, 'Cancel')
-      )
-    )
-  );
-}
-
-// ── SCORE RING ───────────────────────────────────────────────
-
-function scoreRing(score, label='Score') {
-  const pct = Math.min(100,Math.max(0,score));
+// ── SCORE RING ─────────────────────────────────────────
+function scoreRing(score, label) {
+  const pct = Math.min(100, Math.max(0, Number(score) || 0));
   const color = pct >= 50 ? 'var(--green)' : pct >= 25 ? 'var(--amber)' : 'var(--red)';
-  const ring = el('div',{class:'score-ring', style:`--pct:${pct}`});
-  ring.style.background = `conic-gradient(${color} calc(${pct}*1%),var(--bg3) 0)`;
-  ring.style.boxShadow = `0 0 30px ${color}33`;
-  const inner = el('div',{class:'inner'});
-  inner.appendChild(el('div',{class:'pct-val',style:`color:${color}`},`${pct}%`));
-  inner.appendChild(el('div',{class:'pct-lbl'},label));
+  const ring = el('div', {class:'score-ring'});
+  ring.style.background = `conic-gradient(${color} ${pct}%,var(--bg3) 0)`;
+  ring.style.boxShadow  = `0 0 30px ${color}33`;
+  const inner = el('div', {class:'inner'});
+  inner.appendChild(el('div', {class:'pct-val', style:`color:${color}`}, `${pct}%`));
+  inner.appendChild(el('div', {class:'pct-lbl'}, label || ''));
   ring.appendChild(inner);
   return ring;
 }
 
-// ── VIEWS ────────────────────────────────────────────────────
-
-function renderWelcome() {
-  const savedId   = localStorage.getItem('ll_pid');
-  const savedName = localStorage.getItem('ll_pname');
-
-  const nameInput = el('input',{type:'text',placeholder:'Your name...'});
-  const currSel = el('select');
-  [['₹','Indian Rupee (₹)'],['$','US Dollar ($)'],['€','Euro (€)'],['£','GBP (£)'],['¥','JPY (¥)']].forEach(([v,l])=>{
-    currSel.appendChild(el('option',{value:v},l));
-  });
-
-  const joinBtn = el('button',{class:'btn btn-primary',onclick:()=>{
-    const name = nameInput.value.trim();
-    if (!name) { showToast('Enter your name',true); return; }
-    if (!IS_CONFIGURED) { showToast('⚠️ Configure Supabase first!',true); return; }
-    doJoin(name, currSel.value);
-  }},'💰 Join the League');
-  nameInput.onkeydown = e => { if(e.key==='Enter') joinBtn.click(); };
-
-  return el('div',{style:'padding-top:16px'},
-    !IS_CONFIGURED ? el('div',{class:'setup-banner'},
-      el('div',{},el('strong',{style:'color:var(--green)'},'⚠️ Not connected to Supabase yet.')),
-      el('div',{style:'margin-top:8px'},'Open ',el('code',{},'index.html'),' and replace the two config values at the top. Then run the SQL from ',el('code',{},'SETUP.sql'),' in your Supabase SQL Editor.'),
-    ) : null,
-
-    el('div',{style:'text-align:center;margin-bottom:36px'},
-      el('div',{style:'font-size:48px;margin-bottom:10px'},'💰'),
-      el('h1',{class:'serif green',style:'font-size:38px;letter-spacing:-0.02em;line-height:1.1'},'Lifestyle League'),
-      el('p',{class:'muted',style:'margin-top:10px;font-size:16px'},'Track savings discipline. Compete with friends.')
-    ),
-
-    el('div',{class:'card glow'},
-      el('div',{class:'slabel'},'Join or Create Profile'),
-      el('div',{class:'field'},el('label',{},'YOUR NAME'),nameInput),
-      el('div',{class:'field'},el('label',{},'CURRENCY'),currSel),
-      joinBtn,
-      savedId && savedName ? el('div',{style:'margin-top:14px'},
-        el('hr'),
-        el('div',{class:'dim',style:'font-size:13px;margin-bottom:8px'},`Resume as ${savedName}?`),
-        el('button',{class:'btn btn-ghost',onclick:()=>doResume(savedId,savedName)},`→ Continue as ${savedName}`)
-      ) : null
-    ),
-
-    el('div',{class:'feat-grid'},
-      ...[['📊','Score = Savings ÷ Choice Money'],['🏆','Monthly Points System'],['🔥','Streaks & Badges']].map(([ico,lbl])=>
-        el('div',{class:'feat-box'},el('div',{class:'fco'},ico),el('div',{class:'flb'},lbl))
+// ── RENDER CONFIRM ─────────────────────────────────────
+function renderConfirm() {
+  const {confirm} = S;
+  if (!confirm) return null;
+  return el('div', {class:'overlay'},
+    el('div', {class:'modal'},
+      el('div', {style:'font-size:15px;color:#E8F5E9;margin-bottom:16px;line-height:1.5'}, confirm.msg),
+      el('div', {style:'display:flex;gap:10px'},
+        el('button', {class:'btn btn-danger btn-sm', style:'flex:1',
+          onclick:() => { SS({confirm:null}); confirm.onYes(); }}, 'Yes, delete'),
+        el('button', {class:'btn btn-ghost btn-sm', style:'flex:1',
+          onclick:() => SS({confirm:null})}, 'Cancel')
       )
     )
   );
 }
 
-function renderLog() {
-  const {logForm} = S;
-  const income = parseFloat(logForm.income)||0;
-  const fixed  = parseFloat(logForm.fixed_costs)||0;
-  const choiceMoney = income - fixed;
-  const rawSav = parseFloat(logForm.savings)||0;
-  const adjSav = logForm.adj_savings !== '' ? parseFloat(logForm.adj_savings)||0 : rawSav;
-  const score  = calcScore(adjSav, choiceMoney);
-  const previewEntry = {
-    savings: adjSav, choice_money: choiceMoney,
-    pu_streak: logForm.pu_streak, pu_hustle: logForm.pu_hustle,
-    pu_resilience: logForm.pu_resilience, investor_bonus: logForm.investor_bonus,
-    debt_killer_bonus: logForm.debt_killer_bonus, interest_paid: logForm.interest_paid,
-    token_used: logForm.token_used, sabbatical_mode: logForm.sabbatical_mode,
-    sabbatical_pct: parseFloat(logForm.sabbatical_pct)||null,
-  };
-  const previewPts = calcPoints(previewEntry);
+// ── WELCOME ────────────────────────────────────────────
+function renderWelcome() {
+  const savedId   = localStorage.getItem('ll_pid');
+  const savedName = localStorage.getItem('ll_pname');
 
-  // Month selector
-  const now = new Date();
-  const curYear = now.getFullYear();
-  const monthGrid = el('div',{class:'month-grid'});
-  MONTHS_ARR.forEach((m,i)=>{
-    const val = `${curYear}-${String(i+1).padStart(2,'0')}`;
-    const b = el('button',{class:'month-btn'+(logForm.month===val?' sel':''),onclick:()=>{ logForm.month=val; SS({}); }},m);
+  const nameInput = el('input', {type:'text', placeholder:'Your name...'});
+  const currSel   = el('select');
+  [['₹','Indian Rupee (₹)'],['$','US Dollar ($)'],['€','Euro (€)'],['£','GBP (£)'],['¥','JPY (¥)']].forEach(([v,l]) => {
+    currSel.appendChild(el('option', {value:v}, l));
+  });
+  const joinBtn = el('button', {class:'btn btn-primary', onclick:() => {
+    const name = nameInput.value.trim();
+    if (!name) { showToast('Enter your name', true); return; }
+    if (!IS_CONFIGURED) { showToast('⚠️ Configure Supabase first!', true); return; }
+    doJoin(name, currSel.value);
+  }}, '💰 Join the League');
+  nameInput.onkeydown = e => { if (e.key === 'Enter') joinBtn.click(); };
+
+  return el('div', {style:'padding-top:16px'},
+    !IS_CONFIGURED ? el('div', {class:'setup-banner'},
+      el('strong', {style:'color:var(--green)'}, '⚠️ Not connected to Supabase yet.'),
+      el('div', {style:'margin-top:8px'}, 'Open ', el('code',{},'index.html'), ' and replace the two config values at the top. Run ', el('code',{},'SETUP.sql'), ' in Supabase SQL Editor first.')
+    ) : null,
+    el('div', {style:'text-align:center;margin-bottom:36px'},
+      el('div', {style:'font-size:48px;margin-bottom:10px'}, '💰'),
+      el('h1', {class:'serif green', style:'font-size:38px;letter-spacing:-0.02em;line-height:1.1'}, 'Lifestyle League'),
+      el('p', {class:'muted', style:'margin-top:10px;font-size:16px'}, 'Track savings discipline. Compete with friends.')
+    ),
+    el('div', {class:'card glow'},
+      el('div', {class:'slabel'}, 'Join or Create Profile'),
+      el('div', {class:'field'}, el('label',{},'YOUR NAME'), nameInput),
+      el('div', {class:'field'}, el('label',{},'CURRENCY'), currSel),
+      joinBtn,
+      savedId && savedName ? el('div', {style:'margin-top:14px'},
+        el('hr'),
+        el('div', {class:'dim', style:'font-size:13px;margin-bottom:8px'}, `Resume as ${savedName}?`),
+        el('button', {class:'btn btn-ghost', onclick:() => doResume(savedId, savedName)}, `→ Continue as ${savedName}`)
+      ) : null
+    ),
+    el('div', {class:'feat-grid'},
+      ...[ ['📊','Score = Savings ÷ Choice Money'], ['🏆','Monthly Points System'], ['🔥','Streaks & Badges'] ]
+        .map(([ico,lbl]) => el('div',{class:'feat-box'}, el('div',{class:'fco'},ico), el('div',{class:'flb'},lbl)))
+    )
+  );
+}
+
+// ── LOG ────────────────────────────────────────────────
+function renderLog() {
+  const {logForm, logYear} = S;
+  const income      = parseFloat(logForm.income) || 0;
+  const fixed       = parseFloat(logForm.fixed_costs) || 0;
+  const choiceMoney = income - fixed;
+  const rawSav      = parseFloat(logForm.savings) || 0;
+  const adjSav      = logForm.adj_savings !== '' ? (parseFloat(logForm.adj_savings) || 0) : rawSav;
+  const score       = calcScore(adjSav, choiceMoney);
+  const previewPts  = calcPoints({
+    savings:adjSav, choice_money:choiceMoney,
+    pu_streak:logForm.pu_streak, pu_hustle:logForm.pu_hustle,
+    pu_resilience:logForm.pu_resilience, investor_bonus:logForm.investor_bonus,
+    debt_killer_bonus:logForm.debt_killer_bonus, interest_paid:logForm.interest_paid,
+    token_used:logForm.token_used, sabbatical_mode:logForm.sabbatical_mode,
+    sabbatical_pct:parseFloat(logForm.sabbatical_pct)||null,
+  });
+
+  // Year selector for month grid
+  const curYear = new Date().getFullYear();
+  const years = [curYear, curYear-1, curYear-2];
+  const activeYear = logYear || curYear;
+
+  const yearTabsEl = el('div', {class:'year-tabs'},
+    ...years.map(y => {
+      const b = el('button', {class:'year-tab'+(activeYear===y?' active':'')}, `${y}`);
+      b.onclick = () => SS({logYear:y});
+      return b;
+    })
+  );
+
+  const monthGrid = el('div', {class:'month-grid'});
+  MONTHS_ARR.forEach((m, i) => {
+    const val = `${activeYear}-${String(i+1).padStart(2,'0')}`;
+    const b = el('button', {class:'month-btn'+(logForm.month===val?' sel':'')}, m);
+    b.onclick = () => { logForm.month = val; SS({}); };
     monthGrid.appendChild(b);
   });
 
   function numField(label, key, placeholder='0') {
-    const inp = el('input',{type:'number',placeholder,value:logForm[key]||''});
-    inp.oninput = e => { logForm[key]=e.target.value; SS({}); };
-    return el('div',{class:'field'},el('label',{},label),inp);
+    const inp = el('input', {type:'number', placeholder, value:logForm[key]||''});
+    inp.oninput = e => { logForm[key] = e.target.value; SS({}); };
+    return el('div', {class:'field'}, el('label',{},label), inp);
   }
 
-  function togBtn(label, key, ico, extraClass='') {
-    const b = el('button',{class:`pu-btn${logForm[key]?' active':''} ${extraClass}`,onclick:()=>{ logForm[key]=!logForm[key]; SS({}); }},
+  function togBtn(label, key, ico) {
+    const b = el('button', {class:'pu-btn'+(logForm[key]?' active':'')},
       el('span',{},ico), el('span',{},label));
+    b.onclick = () => { logForm[key] = !logForm[key]; SS({}); };
     return b;
   }
 
-  const tokenBtns = TOKENS.map(t=>{
-    const active = logForm.token_used===t.id;
-    const b = el('button',{
-      class:'pu-btn'+(active?' amber-active':''),
-      onclick:()=>{ logForm.token_used=active?'':t.id; SS({}); }
-    }, el('span',{},t.ico), el('span',{},t.name));
+  const tokenBtns = TOKENS.map(t => {
+    const active = logForm.token_used === t.id;
+    const b = el('button', {class:'pu-btn'+(active?' amber-active':'')},
+      el('span',{},t.ico), el('span',{},t.name));
+    b.onclick = () => { logForm.token_used = active ? '' : t.id; SS({}); };
     return b;
   });
 
+  const notesTA = el('textarea', {placeholder:"What worked? What didn't?"});
+  notesTA.value = logForm.notes || '';
+  notesTA.oninput = e => { logForm.notes = e.target.value; };
+
   return el('div',{},
-    el('button',{class:'btn btn-ghost btn-sm',style:'width:auto;margin-bottom:18px',onclick:()=>SS({view:'dashboard'})},'← Back'),
-    el('h2',{class:'serif green',style:'font-size:24px;margin-bottom:20px'},'Log Month'),
+    el('button', {class:'btn btn-ghost btn-sm', style:'width:auto;margin-bottom:18px', onclick:()=>SS({view:'dashboard'})}, '← Back'),
+    el('h2', {class:'serif green', style:'font-size:24px;margin-bottom:20px'}, 'Log Month'),
 
     el('div',{class:'card'},
       el('div',{class:'slabel'},'Select Month'),
-      monthGrid
+      yearTabsEl,
+      monthGrid,
+      logForm.month ? el('div',{style:'margin-top:8px;font-size:12px;color:var(--green);font-family:var(--mono)'},`Selected: ${monthLabel(logForm.month)}`) : null,
     ),
 
     el('div',{class:'card'},
@@ -819,7 +659,7 @@ function renderLog() {
       numField('INCOME THIS MONTH','income','e.g. 80000'),
       numField('FIXED LOCKED COSTS','fixed_costs','rent + utilities + EMIs + insurance'),
       choiceMoney > 0 ? el('div',{style:'background:rgba(46,204,113,0.06);border:1px solid var(--border2);border-radius:8px;padding:10px 14px;font-family:var(--mono);font-size:13px;color:var(--text2)'},
-        'Choice Money = ', el('span',{class:'green'},`${fmtCurrency(choiceMoney)}`)
+        'Choice Money = ', el('span',{class:'green'}, fmtCurrency(choiceMoney))
       ) : null,
     ),
 
@@ -827,51 +667,57 @@ function renderLog() {
       el('div',{class:'slabel'},'Savings'),
       numField('RAW SAVINGS (bank balance increase)','savings'),
       el('div',{class:'field'},
-        el('label',{},'ADJUSTED SAVINGS (after credit card debt adj — leave blank if same)'),
-        el('input',{type:'number',placeholder:'optional',value:logForm.adj_savings||'',oninput:e=>{logForm.adj_savings=e.target.value;SS({})}})
+        el('label',{},'ADJUSTED SAVINGS (after CC debt adj — leave blank if same)'),
+        el('input',{type:'number', placeholder:'optional', value:logForm.adj_savings||'',
+          oninput:e=>{logForm.adj_savings=e.target.value;SS({})}})
       ),
     ),
 
     el('div',{class:'card'},
       el('div',{class:'slabel'},'Power-Ups'),
       el('div',{class:'pu-grid'},
-        togBtn('Streak +1pt','pu_streak','🔥'),
-        togBtn(score>=50?'Hustle +0.5pt ✓':'Hustle +0.5pt','pu_hustle','⚡'),
-        togBtn('Resilience +2pt','pu_resilience','💪'),
-        togBtn('Investor +0.2pt','investor_bonus','📈'),
-        togBtn('Debt Killer','debt_killer_bonus','⚔️'),
-        togBtn('Interest Paid −0.5pt','interest_paid','💸'),
+        togBtn('Streak +1pt',    'pu_streak',        '🔥'),
+        togBtn(score>=50?'Hustle +0.5pt ✓':'Hustle +0.5pt', 'pu_hustle', '⚡'),
+        togBtn('Resilience +2pt','pu_resilience',    '💪'),
+        togBtn('Investor +0.2pt','investor_bonus',   '📈'),
+        togBtn('Debt Killer',    'debt_killer_bonus','⚔️'),
+        togBtn('Interest −0.5pt','interest_paid',    '💸'),
       )
     ),
 
     el('div',{class:'card'},
-      el('div',{class:'slabel'},'Safety Tokens (use one if applicable)'),
-      el('div',{class:'pu-grid'},...tokenBtns)
+      el('div',{class:'slabel'},'Safety Tokens (pick one if applicable)'),
+      el('div',{class:'pu-grid'}, ...tokenBtns)
     ),
 
     el('div',{class:'card'},
       el('div',{class:'slabel'},'Special Modes'),
       el('div',{class:'field'},
-        el('label',{},el('input',{type:'checkbox',checked:logForm.sabbatical_mode,onchange:e=>{logForm.sabbatical_mode=e.target.checked;SS({})},style:'width:auto;margin-right:8px'}),'Infant Sabbatical / Sabbatical Month'),
+        el('label',{style:'display:flex;align-items:center;gap:8px;cursor:pointer'},
+          el('input',{type:'checkbox', style:'width:auto',
+            onchange:e=>{logForm.sabbatical_mode=e.target.checked;SS({})}}),
+          'Infant Sabbatical / Sabbatical Month'
+        ),
       ),
-      logForm.sabbatical_mode ? el('div',{class:'field'},el('label',{},'COMPLIANCE % (1% = 1pt)'),el('input',{type:'number',min:0,max:100,value:logForm.sabbatical_pct||'',oninput:e=>{logForm.sabbatical_pct=e.target.value;SS({})},placeholder:'e.g. 50'})) : null,
+      logForm.sabbatical_mode ? el('div',{class:'field'},
+        el('label',{},'COMPLIANCE % (1% = 1pt)'),
+        el('input',{type:'number',min:0,max:100,placeholder:'e.g. 50',value:logForm.sabbatical_pct||'',
+          oninput:e=>{logForm.sabbatical_pct=e.target.value;SS({})}})
+      ) : null,
     ),
 
     el('div',{class:'card'},
-      el('div',{class:'field'},el('label',{},'NOTES (optional)'),
-        el('textarea',{placeholder:'What worked? What didn\'t?',oninput:e=>{logForm.notes=e.target.value}},logForm.notes)
-      )
+      el('div',{class:'field'},el('label',{},'NOTES (optional)'), notesTA)
     ),
 
-    // Preview
     el('div',{class:'card glow',style:'text-align:center'},
       el('div',{class:'slabel',style:'justify-content:center;gap:0;margin-bottom:16px'},'PREVIEW'),
       el('div',{style:'display:flex;align-items:center;justify-content:center;gap:32px'},
-        scoreRing(score, 'Score'),
+        scoreRing(score,'Score'),
         el('div',{},
           el('div',{class:'dim',style:'font-size:11px;letter-spacing:0.1em'},'POINTS'),
-          el('div',{class:'mono green',style:'font-size:36px;line-height:1'},`+${previewPts}`),
-          logForm.token_used ? el('div',{class:'amber',style:'font-size:12px;margin-top:4px'},'Token Used') : null,
+          el('div',{class:'mono green',style:'font-size:36px;line-height:1'}, `+${previewPts}`),
+          logForm.token_used ? el('div',{class:'amber',style:'font-size:12px;margin-top:4px'},'Token Used — 0 pts') : null,
         )
       )
     ),
@@ -880,85 +726,85 @@ function renderLog() {
   );
 }
 
+// ── DASHBOARD ──────────────────────────────────────────
 function renderDashboard() {
   const {player, entries, allEntries, allPlayers, tab} = S;
+
+  // Guard: if allPlayers is missing, show loading
+  if (!allPlayers) return el('div',{style:'text-align:center;padding:60px'},el('div',{class:'spinner'}));
+
   const pts    = totalPoints(entries);
   const streak = calcStreak(entries);
-  const score  = entries.length ? calcScore(entries[0].savings, entries[0].choice_money) : 0;
   const badges = calcBadges(entries);
+  const latestEntry = Array.isArray(entries) ? entries[0] : null;
+  const latestScore = latestEntry ? calcScore(latestEntry.savings, latestEntry.choice_money) : 0;
+  const latestPts   = latestEntry ? calcPoints(latestEntry) : 0;
 
-  // Build leaderboard from allPlayers (source of truth for names)
+  // Build leaderboard safely
   const lbRaw = allPlayers.map(p => {
-    const pes = allEntries.filter(e => e.player_id === p.id);
+    const pes  = Array.isArray(allEntries) ? allEntries.filter(e => e.player_id === p.id) : [];
     const ptot = totalPoints(pes);
-    const pStreak = calcStreak(pes);
-    const pScore = pes.length ? calcScore(pes[0].savings, pes[0].choice_money) : 0;
     return {
-      id: p.id,
-      name: p.name,
-      pts: ptot, streak: pStreak,
-      months: pes.length, lastScore: pScore,
+      id: p.id, name: p.name || '?',
+      pts: ptot,
+      streak: calcStreak(pes),
+      months: pes.length,
       badges: calcBadges(pes).length,
     };
   }).sort((a,b) => b.pts - a.pts);
 
-  const myLBPos = lbRaw.findIndex(p=>p.id===player.id)+1 || '—';
+  const myPos = lbRaw.findIndex(p => p.id === player.id) + 1 || '—';
 
-  // Header
   const header = el('div',{style:'display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px'},
     el('div',{},
       el('div',{class:'dim',style:'font-size:10px;letter-spacing:0.12em;text-transform:uppercase'},'Lifestyle League'),
-      el('div',{class:'serif green',style:'font-size:22px;line-height:1.2'},player.name),
-      el('div',{class:'muted',style:'font-size:13px'},`#${myLBPos} overall · ${entries.length} months`)
+      el('div',{class:'serif green',style:'font-size:22px;line-height:1.2'}, player.name || ''),
+      el('div',{class:'muted',style:'font-size:13px'}, `#${myPos} overall · ${(entries||[]).length} months`)
     ),
     el('div',{style:'text-align:right'},
-      el('div',{class:'mono',style:'font-size:28px;color:var(--green);line-height:1'},`${pts}`),
-      el('div',{class:'dim',style:'font-size:11px;letter-spacing:0.08em'},'TOTAL PTS'),
+      el('div',{class:'mono',style:'font-size:28px;color:var(--green);line-height:1'}, `${pts}`),
+      el('div',{class:'dim',style:'font-size:11px;letter-spacing:0.08em'},'TOTAL PTS')
     )
   );
 
-  const tabs = el('div',{class:'tabs'},
-    ...['home','league','history','manage'].map(t=>{
+  const tabsEl = el('div',{class:'tabs'},
+    ...['home','league','history','manage'].map(t => {
       const lbl = {home:'🏠 Home',league:'🏆 League',history:'📋 History',manage:'⚙️ Manage'}[t];
-      const b = el('button',{class:'tab'+(tab===t?' active':'')},lbl);
-      b.onclick = ()=>SS({tab:t});
+      const b = el('button',{class:'tab'+(tab===t?' active':'')}, lbl);
+      b.onclick = () => SS({tab:t});
       return b;
     })
   );
 
-  // ── HOME ──
+  // ── HOME TAB ──
   function homeTab() {
-    const latestEntry = entries[0];
-    const latestScore = latestEntry ? calcScore(latestEntry.savings, latestEntry.choice_money) : 0;
-    const latestPts   = latestEntry ? calcPoints(latestEntry) : 0;
-
     const statsRow = el('div',{class:'stats-row'},
       ...[
-        {si:'💰',sv:pts,sl:'Total Pts'},
-        {si:'🔥',sv:`${streak}mo`,sl:'Streak'},
-        {si:'📊',sv:`${latestScore}%`,sl:'Last Score'},
-      ].map(s=>el('div',{class:'stat-box'},
+        {si:'💰', sv:`${pts}`,          sl:'Total Pts'},
+        {si:'🔥', sv:`${streak}mo`,     sl:'Streak'},
+        {si:'📊', sv:`${latestScore}%`, sl:'Last Score'},
+      ].map(s => el('div',{class:'stat-box'},
         el('div',{class:'si'},s.si),
-        el('div',{class:'sv'},`${s.sv}`),
+        el('div',{class:'sv'},s.sv),
         el('div',{class:'sl'},s.sl)
       ))
     );
 
-    // Score ring card
     const ringCard = el('div',{class:'card glow',style:'display:flex;align-items:center;gap:24px'},
-      scoreRing(latestScore, monthLabel(latestEntry?.month||thisMonth())),
-      el('div',{style:'flex:1'},
+      scoreRing(latestScore, monthLabel(latestEntry?.month || thisMonth())),
+      el('div',{style:'flex:1;min-width:0'},
         el('div',{class:'dim',style:'font-size:11px;letter-spacing:0.1em;margin-bottom:6px'},'LAST MONTH'),
-        latestEntry ? el('div',{},
-          el('div',{class:'mono',style:'font-size:13px;color:var(--text2)'},`Saved: ${fmtCurrency(latestEntry.savings)}`),
-          el('div',{class:'mono',style:'font-size:13px;color:var(--text2)'},`Choice: ${fmtCurrency(latestEntry.choice_money)}`),
-          el('div',{class:'green mono',style:'font-size:20px;margin-top:8px'},`+${latestPts} pts`),
-          latestEntry.token_used ? el('div',{class:'amber',style:'font-size:12px;margin-top:4px'},'Safety token used') : null,
-        ) : el('div',{class:'muted',style:'font-size:14px'},'No entries yet — log your first month!')
+        latestEntry
+          ? el('div',{},
+              el('div',{class:'mono',style:'font-size:13px;color:var(--text2)'}, `Saved: ${fmtCurrency(latestEntry.savings)}`),
+              el('div',{class:'mono',style:'font-size:13px;color:var(--text2)'}, `Choice: ${fmtCurrency(latestEntry.choice_money)}`),
+              el('div',{class:'green mono',style:'font-size:20px;margin-top:8px'}, `+${latestPts} pts`),
+              latestEntry.token_used ? el('div',{class:'amber',style:'font-size:12px;margin-top:4px'},'Safety token used') : null
+            )
+          : el('div',{class:'muted',style:'font-size:14px'},'No entries yet — log your first month!')
       )
     );
 
-    // Log CTA
     const logCta = el('div',{class:'card',style:'text-align:center'},
       el('div',{style:'font-size:24px;margin-bottom:8px'},'📋'),
       el('div',{class:'serif green',style:'font-size:18px;margin-bottom:6px'},'Log This Month'),
@@ -966,236 +812,225 @@ function renderDashboard() {
       el('button',{class:'btn btn-primary',onclick:()=>SS({view:'log'})},'Submit Month →')
     );
 
-    // Badges
     const badgeCard = el('div',{class:'card'},
-      el('div',{class:'slabel'},`Badges (${badges.length}/${BADGES_DEF.length})`),
+      el('div',{class:'slabel'}, `Badges (${badges.length}/${BADGES_DEF.length})`),
       el('div',{class:'badge-wrap'},
-        ...BADGES_DEF.map(b=>{
-          const earned = badges.find(x=>x.id===b.id);
+        ...BADGES_DEF.map(b => {
+          const earned = badges.find(x => x.id === b.id);
           return el('div',{class:'badge'+(earned?' earned':' locked'),title:b.desc},
-            el('div',{class:'bico'},b.ico),
-            el('div',{class:'bnm'},b.name)
+            el('div',{class:'bico'}, b.ico),
+            el('div',{class:'bnm'},  b.name)
           );
         })
       )
     );
 
-    // Members switcher
-    const memberCard = el('div',{class:'card'},
-      el('div',{class:'slabel'},'Players')
-    );
-    lbRaw.forEach(p=>{
-      const row = el('button',{style:`display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:8px;cursor:pointer;margin-bottom:6px;background:${p.id===player.id?'rgba(46,204,113,0.08)':'transparent'};border:1px solid ${p.id===player.id?'rgba(46,204,113,0.25)':'var(--border)'};color:${p.id===player.id?'var(--green)':'var(--text2)'};font-family:var(--sans);font-size:14px;text-align:left`},
+    // Players list
+    const memberCard = el('div',{class:'card'}, el('div',{class:'slabel'},'Players'));
+    lbRaw.forEach(p => {
+      const isSelf = p.id === player.id;
+      const row = el('button',{style:`display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:8px;cursor:pointer;margin-bottom:6px;background:${isSelf?'rgba(46,204,113,0.08)':'transparent'};border:1px solid ${isSelf?'rgba(46,204,113,0.25)':'var(--border)'};color:${isSelf?'var(--green)':'var(--text2)'};font-family:var(--sans);font-size:14px;text-align:left`},
         el('span',{style:'font-size:16px'},'👤'),
-        el('span',{style:'flex:1'},p.name),
-        el('span',{class:'dim',style:'font-size:12px'},`${p.pts}pts`),
-        p.id===player.id?el('span',{class:'dim',style:'font-size:11px'},'← you'):null
+        el('span',{style:'flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'}, p.name),
+        el('span',{class:'dim',style:'font-size:12px;flex-shrink:0'}, `${p.pts}pts`),
+        isSelf ? el('span',{class:'dim',style:'font-size:11px;flex-shrink:0'},'← you') : null
       );
-      if (p.id!==player.id) row.onclick=()=>doSwitchPlayer(p.id);
+      if (!isSelf) row.onclick = () => doSwitchPlayer(p.id);
       memberCard.appendChild(row);
     });
 
-    // Inline add-player form
+    // Inline add player
     let addOpen = false;
-    const addToggle = el('button',{
-      style:'display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:8px;cursor:pointer;background:transparent;border:1px dashed var(--border2);color:var(--text3);font-family:var(--sans);font-size:14px;margin-top:4px'
-    },'+ Add New Player');
-
+    const addToggle = el('button',{style:'display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:8px;cursor:pointer;background:transparent;border:1px dashed var(--border2);color:var(--text3);font-family:var(--sans);font-size:14px;margin-top:4px'},
+      '+ Add New Player');
     const addForm = el('div',{style:'display:none;margin-top:10px;padding:14px;background:rgba(46,204,113,0.04);border:1px solid var(--border2);border-radius:10px'});
     const newNameInp = el('input',{type:'text',placeholder:'New player name...',style:'margin-bottom:10px'});
     const newCurrSel = el('select',{style:'margin-bottom:10px'});
-    [['₹','₹ Indian Rupee'],['$','$ US Dollar'],['€','€ Euro'],['£','£ GBP']].forEach(([v,l])=>{
+    [['₹','₹ Indian Rupee'],['$','$ US Dollar'],['€','€ Euro'],['£','£ GBP']].forEach(([v,l]) => {
       newCurrSel.appendChild(el('option',{value:v},l));
     });
-    const addSubmitBtn = el('button',{class:'btn btn-primary',style:'margin-top:4px',onclick:async()=>{
+    const addSubmitBtn = el('button',{class:'btn btn-primary',style:'margin-top:4px'},
+      '✓ Add & Switch to Player');
+    addSubmitBtn.onclick = () => {
       const name = newNameInp.value.trim();
-      if (!name) { showToast('Enter a name',true); return; }
-      if (!IS_CONFIGURED) { showToast('Configure Supabase first',true); return; }
-      SS({loading:true});
-      try {
-        const np = await dbCreatePlayer(name, newCurrSel.value);
-        localStorage.setItem('ll_pid', np.id);
-        localStorage.setItem('ll_pname', np.name);
-        const newEntries = await dbFetchEntries(np.id);
-        const allEntries = await dbFetchAllEntries();
-        const allPlayers = await dbFetchAllPlayers();
-        SS({player:np, entries:newEntries, allEntries, allPlayers, loading:false, tab:'home'});
-        showToast(`💰 Switched to ${np.name}`);
-      } catch(e) { showToast('❌ '+e.message,true); SS({loading:false}); }
-    }},'✓ Add & Switch to Player');
-
+      if (!name) { showToast('Enter a name', true); return; }
+      if (!IS_CONFIGURED) { showToast('Configure Supabase first', true); return; }
+      doAddPlayer(name, newCurrSel.value);
+    };
     addForm.appendChild(newNameInp);
     addForm.appendChild(newCurrSel);
     addForm.appendChild(addSubmitBtn);
-
     addToggle.onclick = () => {
       addOpen = !addOpen;
       addForm.style.display = addOpen ? 'block' : 'none';
-      addToggle.textContent = addOpen ? '✕ Cancel' : '+ Add New Player';
+      addToggle.textContent  = addOpen ? '✕ Cancel' : '+ Add New Player';
     };
-
     memberCard.appendChild(addToggle);
     memberCard.appendChild(addForm);
 
-    return el('div',{},statsRow,ringCard,logCta,badgeCard,memberCard);
+    return el('div',{}, statsRow, ringCard, logCta, badgeCard, memberCard);
   }
 
-  // ── LEAGUE ──
+  // ── LEAGUE TAB ──
   function leagueTab() {
     const leader = lbRaw[0];
+    const posIco = ['👑','🥈','🥉'];
+    const posClr = ['var(--amber)','#C0C0C0','#CD7F32'];
 
     const leaderCard = leader ? el('div',{class:'card glow',style:'text-align:center'},
       el('div',{class:'slabel',style:'justify-content:center'},'Current Leader'),
       el('div',{style:'font-size:40px;margin:6px 0'},'👑'),
-      el('div',{class:'serif green',style:'font-size:24px'},leader.name),
-      el('div',{class:'muted',style:'font-size:13px;margin-top:4px'},`${leader.pts} pts · ${leader.months} months · 🔥${leader.streak}mo`),
-      el('div',{class:'dim',style:'font-size:12px;margin-top:6px'},'Losers fund winner\'s splurge 🎉')
+      el('div',{class:'serif green',style:'font-size:24px'}, leader.name),
+      el('div',{class:'muted',style:'font-size:13px;margin-top:4px'},
+        `${leader.pts} pts · ${leader.months} months · 🔥${leader.streak}mo`),
+      el('div',{class:'dim',style:'font-size:12px;margin-top:6px'},"Losers fund winner's splurge 🎉")
     ) : null;
 
-    const posIco = ['👑','🥈','🥉'];
-    const posClr = ['var(--amber)','#C0C0C0','#CD7F32'];
-
-    const lbCard = el('div',{class:'card'},
-      el('div',{class:'slabel'},'Rankings'),
-      ...lbRaw.map((p,i)=>
-        el('div',{class:'lb-row'},
-          el('div',{class:'lb-pos',style:`color:${posClr[i]||'var(--text3)'}`},i<3?posIco[i]:`#${i+1}`),
+    const lbCard = el('div',{class:'card'}, el('div',{class:'slabel'},'Rankings'));
+    if (!lbRaw.length) {
+      lbCard.appendChild(el('div',{class:'muted',style:'padding:16px;text-align:center'},'No players yet'));
+    } else {
+      lbRaw.forEach((p, i) => {
+        const isSelf = p.id === player.id;
+        const row = el('div',{class:'lb-row'},
+          el('div',{class:'lb-pos',style:`color:${posClr[i]||'var(--text3)'}`}, i<3 ? posIco[i] : `#${i+1}`),
           el('div',{class:'lb-info'},
-            el('div',{class:'lb-name',style:p.id===player.id?'color:var(--green)':''},
-              p.name, p.id===player.id?el('span',{class:'dim',style:'font-size:11px'},' (you)'):null),
-            el('div',{class:'lb-sub'},`${p.months} months · 🔥${p.streak}mo · 🏅${p.badges}`)
+            el('div',{class:'lb-name',style:isSelf?'color:var(--green)':''}, p.name,
+              isSelf ? el('span',{class:'dim',style:'font-size:11px;margin-left:4px'},'(you)') : null),
+            el('div',{class:'lb-sub'}, `${p.months} months · 🔥${p.streak}mo · 🏅${p.badges}`)
           ),
           el('div',{class:'lb-score'},
-            el('div',{class:'lb-pts'},`${p.pts}`),
-            el('div',{class:'lb-meta'},'pts')
+            el('div',{class:'lb-pts'}, `${p.pts}`),
+            el('div',{class:'lb-meta'}, 'pts')
           )
-        )
-      )
-    );
+        );
+        lbCard.appendChild(row);
+      });
+    }
 
-    const rulesCard = el('div',{class:'card'},
-      el('div',{class:'slabel'},'Scoring Rules'),
+    const rulesCard = el('div',{class:'card'}, el('div',{class:'slabel'},'Scoring Rules'),
       ...[
-        ['Score = Savings ÷ Choice Money','Measures discipline, not dollars'],
+        ['Score = Savings ÷ Choice Money','% of discipline'],
         ['1 pt per month','If score ≥ 1%'],
         ['Lifestyle Creep','Choice Money >5k → need 40% min'],
         ['Streak +1pt','🔥 Active streak bonus'],
         ['Hustle +0.5pt','⚡ Score ≥ 50%'],
         ['Resilience +2pt','💪 Bounce back after hardship'],
         ['Investor +0.2pt','📈 Move idle cash to FD/MF'],
-        ['Debt Killer','⚔️ Extra debt payment = savings'],
-        ['Interest Paid −0.5pt','💸 Penalty for carrying CC balance'],
+        ['Debt Killer','⚔️ Extra debt = savings'],
+        ['Interest Paid −0.5pt','💸 Penalty for CC balance'],
         ['Safety Token','🛡️ Month skipped = 0 pts, no penalty'],
-        ['Windfall','Tax refunds/inheritance = Bonus Round'],
         ['Grand Finale Tie','Highest avg monthly score wins'],
-      ].map(([k,v])=>el('div',{class:'rule-row'},el('span',{class:'rule-key'},k),el('span',{class:'rule-val'},v)))
+      ].map(([k,v]) => el('div',{class:'rule-row'},
+        el('span',{class:'rule-key'},k), el('span',{class:'rule-val'},v)
+      ))
     );
 
-    const rewardsCard = el('div',{class:'card'},
-      el('div',{class:'slabel'},'Rewards'),
+    const rewardsCard = el('div',{class:'card'}, el('div',{class:'slabel'},'Rewards'),
       el('div',{class:'muted',style:'font-size:14px;line-height:1.75'},
-        el('p',{style:'margin-bottom:8px'},'🥇 ', el('span',{class:'green'},'Monthly Crown'), ' — Top scorer picks next challenge'),
-        el('p',{style:'margin-bottom:8px'},'💰 ', el('span',{class:'green'},'Grand Finale'), ' — Losers fund winner\'s splurge'),
-        el('p',{style:'margin-bottom:8px'},'🔥 ', el('span',{class:'green'},'Streak Shield'), ' — Longest streak = skip-one-month pass'),
-        el('p',{style:'margin-bottom:0'},'👑 ', el('span',{class:'green'},'All-Time King'), ' — Most points over the full game duration'),
+        el('p',{style:'margin-bottom:8px'}, '🥇 ', el('span',{class:'green'},'Monthly Crown'), ' — Top scorer picks next challenge'),
+        el('p',{style:'margin-bottom:8px'}, '💰 ', el('span',{class:'green'},'Grand Finale'), " — Losers fund winner's splurge"),
+        el('p',{style:'margin-bottom:8px'}, '🔥 ', el('span',{class:'green'},'Streak Shield'), ' — Longest streak = skip-one-month pass'),
+        el('p',{style:'margin-bottom:0'},   '👑 ', el('span',{class:'green'},'All-Time King'), ' — Most points over full game duration')
       )
     );
 
-    return el('div',{},leaderCard,lbCard,rulesCard,rewardsCard);
+    return el('div',{}, leaderCard, lbCard, rulesCard, rewardsCard);
   }
 
-  // ── HISTORY ──
+  // ── HISTORY TAB ──
   function historyTab() {
-    const card = el('div',{class:'card'},
-      el('div',{class:'slabel'},'Your Monthly Log')
-    );
-    if (!entries.length) {
+    const card = el('div',{class:'card'}, el('div',{class:'slabel'},'Your Monthly Log'));
+    if (!entries || !entries.length) {
       card.appendChild(el('div',{class:'muted',style:'text-align:center;padding:24px;font-size:15px'},'No entries yet. Log your first month! 💰'));
     } else {
-      entries.forEach(e=>{
-        const sc = calcScore(e.savings,e.choice_money);
+      entries.forEach(e => {
+        const sc = calcScore(e.savings, e.choice_money);
         const pt = calcPoints(e);
         const scoreColor = sc>=50?'var(--green)':sc>=25?'var(--amber)':'var(--red)';
         const row = el('div',{class:'entry-row'},
           el('div',{class:'entry-month'},
-            el('div',{},monthLabel(e.month).slice(0,3)),
-            el('div',{class:'epts',style:`color:${pt>0?'var(--green)':pt<0?'var(--red)':'var(--text3)'}`},`${pt>0?'+':''}${pt}pt`)
+            el('div',{}, monthLabel(e.month).slice(0,7)),
+            el('div',{class:'epts',style:`color:${pt>0?'var(--green)':pt<0?'var(--red)':'var(--text3)'}`},
+              `${pt>0?'+':''}${pt}pt`)
           ),
-          el('div',{class:'entry-detail',style:'flex:1'},
-            el('div',{class:'entry-name',style:`color:${scoreColor}`},`${sc}% score`),
-            el('div',{class:'entry-nums'},
-              `Saved ${fmtCurrency(e.savings)} / Choice ${fmtCurrency(e.choice_money)}`
-            ),
+          el('div',{class:'entry-detail'},
+            el('div',{class:'entry-name',style:`color:${scoreColor}`}, `${sc}% score`),
+            el('div',{class:'entry-nums'}, `Saved ${fmtCurrency(e.savings)} / Choice ${fmtCurrency(e.choice_money)}`),
             el('div',{style:'margin-top:5px;display:flex;flex-wrap:wrap;gap:6px'},
-              e.pu_streak?el('span',{class:'token active',style:'padding:3px 8px;font-size:11px'},'🔥Streak'):null,
-              e.pu_hustle?el('span',{class:'token active',style:'padding:3px 8px;font-size:11px'},'⚡Hustle'):null,
-              e.pu_resilience?el('span',{class:'token active',style:'padding:3px 8px;font-size:11px'},'💪Resilience'):null,
-              e.investor_bonus?el('span',{class:'token active',style:'padding:3px 8px;font-size:11px'},'📈Investor'):null,
-              e.token_used?el('span',{class:'token',style:'padding:3px 8px;font-size:11px;color:var(--amber);border-color:rgba(240,180,41,0.3)'},`🛡️ ${TOKENS.find(t=>t.id===e.token_used)?.name||'Token'}`):null,
+              e.pu_streak      ? el('span',{class:'token active',style:'padding:3px 8px;font-size:11px'},'🔥 Streak')     : null,
+              e.pu_hustle      ? el('span',{class:'token active',style:'padding:3px 8px;font-size:11px'},'⚡ Hustle')     : null,
+              e.pu_resilience  ? el('span',{class:'token active',style:'padding:3px 8px;font-size:11px'},'💪 Resilience') : null,
+              e.investor_bonus ? el('span',{class:'token active',style:'padding:3px 8px;font-size:11px'},'📈 Investor')   : null,
+              e.token_used ? el('span',{class:'token',style:'padding:3px 8px;font-size:11px;color:var(--amber);border-color:rgba(240,180,41,0.3)'},
+                `🛡️ ${TOKENS.find(t=>t.id===e.token_used)?.name||'Token'}`) : null
             ),
-            e.notes?el('div',{class:'dim',style:'font-size:12px;margin-top:4px;font-style:italic'},e.notes):null,
+            e.notes ? el('div',{class:'dim',style:'font-size:12px;margin-top:4px;font-style:italic'}, e.notes) : null
           )
         );
         card.appendChild(row);
       });
     }
-    return el('div',{},card);
+    return el('div',{}, card);
   }
 
-  // ── MANAGE ──
+  // ── MANAGE TAB ──
   function manageTab() {
-    const myEntries = el('div',{class:'card'},
-      el('div',{class:'slabel'},'Delete Individual Entries')
-    );
-    if (!entries.length) {
-      myEntries.appendChild(el('div',{class:'dim',style:'font-size:13px;padding:12px 0'},'No entries to delete'));
+    // My entries
+    const myCard = el('div',{class:'card'}, el('div',{class:'slabel'},'Delete My Entries'));
+    if (!entries || !entries.length) {
+      myCard.appendChild(el('div',{class:'dim',style:'font-size:13px;padding:12px 0'},'No entries to delete'));
     } else {
-      entries.forEach(e=>{
-        const sc = calcScore(e.savings,e.choice_money);
+      entries.forEach(e => {
+        const sc = calcScore(e.savings, e.choice_money);
         const pt = calcPoints(e);
         const row = el('div',{style:'display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)'},
           el('div',{style:'flex:1'},
-            el('div',{style:'font-size:14px;color:var(--text)'},monthLabel(e.month)),
-            el('div',{class:'mono dim',style:'font-size:12px;margin-top:2px'},`${sc}% · ${pt>0?'+':''}${pt}pt`)
+            el('div',{style:'font-size:14px;color:var(--text)'}, monthLabel(e.month)),
+            el('div',{class:'mono dim',style:'font-size:12px;margin-top:2px'}, `${sc}% · ${pt>0?'+':''}${pt}pt`)
           ),
-          el('button',{class:'btn btn-danger btn-sm',onclick:()=>
-            confirm$(`Delete entry for ${monthLabel(e.month)}? Cannot be undone.`,()=>doDeleteEntry(e.id))
-          },'🗑️')
+          el('button',{class:'btn btn-danger btn-sm',
+            onclick:() => confirm$(`Delete entry for ${monthLabel(e.month)}? Cannot be undone.`, () => doDeleteEntry(e.id))
+          }, '🗑️')
         );
-        myEntries.appendChild(row);
+        myCard.appendChild(row);
       });
     }
 
-    const playerMgmt = el('div',{class:'card'},
-      el('div',{class:'slabel'},'Player Management')
-    );
-    lbRaw.forEach(p=>{
-      const row = el('div',{style:'display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)'},
-        el('div',{style:'flex:1'},
-          el('div',{style:`font-size:14px;font-weight:600;color:${p.id===player.id?'var(--green)':'var(--text)'}`},p.name),
-          el('div',{class:'dim',style:'font-size:12px;margin-top:2px'},`${p.pts}pts · ${p.months} months`)
-        ),
-        el('div',{style:'display:flex;gap:6px'},
-          el('button',{class:'btn btn-warn btn-sm',
-            onclick:()=>confirm$(`Clear ALL entries for ${p.name}? Points go to 0. Cannot be undone.`,()=>doDeleteAllEntries(p.id))
-          },'Clear'),
-          p.id!==player.id ? el('button',{class:'btn btn-danger btn-sm',
-            onclick:()=>confirm$(`Remove ${p.name} from the league? All their data will be deleted.`,()=>doDeletePlayer(p.id))
-          },'Remove') : null,
-        )
-      );
-      playerMgmt.appendChild(row);
-    });
+    // All players management
+    const playersCard = el('div',{class:'card'}, el('div',{class:'slabel'},'Player Management'));
+    if (!lbRaw.length) {
+      playersCard.appendChild(el('div',{class:'muted',style:'padding:12px 0;font-size:14px'},'No players yet'));
+    } else {
+      lbRaw.forEach(p => {
+        const isSelf = p.id === player.id;
+        const row = el('div',{style:'display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)'},
+          el('div',{style:'flex:1;min-width:0'},
+            el('div',{style:`font-size:14px;font-weight:600;color:${isSelf?'var(--green)':'var(--text)'}`}, p.name),
+            el('div',{class:'dim',style:'font-size:12px;margin-top:2px'}, `${p.pts}pts · ${p.months} months`)
+          ),
+          el('div',{style:'display:flex;gap:6px;flex-shrink:0'},
+            el('button',{class:'btn btn-warn btn-sm',
+              onclick:() => confirm$(`Clear ALL entries for ${p.name}? Points reset to 0.`, () => doDeleteAllEntries(p.id))
+            }, 'Clear'),
+            !isSelf ? el('button',{class:'btn btn-danger btn-sm',
+              onclick:() => confirm$(`Remove ${p.name} from the league? All data deleted.`, () => doDeletePlayer(p.id))
+            }, 'Remove') : null
+          )
+        );
+        playersCard.appendChild(row);
+      });
+    }
 
     const dangerCard = el('div',{class:'card danger'},
       el('div',{class:'slabel',style:'color:var(--red)'},'Danger Zone'),
       el('div',{class:'muted',style:'font-size:13px;margin-bottom:12px'},'Deletes your profile and all your entries.'),
-      el('button',{class:'btn btn-danger',onclick:()=>
-        confirm$('Delete your profile and ALL your entries? This cannot be undone.',()=>doDeletePlayer(player.id))
-      },'🔴 Delete My Profile')
+      el('button',{class:'btn btn-danger',
+        onclick:() => confirm$('Delete your profile and ALL entries? Cannot be undone.', () => doDeletePlayer(player.id))
+      }, '🔴 Delete My Profile')
     );
 
-    return el('div',{},myEntries,playerMgmt,dangerCard);
+    return el('div',{}, myCard, playersCard, dangerCard);
   }
 
   const tabContent =
@@ -1204,14 +1039,14 @@ function renderDashboard() {
     tab==='history' ? historyTab() :
     manageTab();
 
-  return el('div',{},header,tabs,tabContent);
+  return el('div',{}, header, tabsEl, tabContent);
 }
 
-// ── MAIN RENDER ──────────────────────────────────────────────
-
+// ── RENDER ─────────────────────────────────────────────
 function render() {
   const root = document.getElementById('app');
-  root.innerHTML='';
+  if (!root) return;
+  root.innerHTML = '';
 
   if (S.confirm) root.appendChild(renderConfirm());
 
@@ -1224,16 +1059,24 @@ function render() {
   }
 
   let view;
-  if (!S.player || S.view==='welcome') view = renderWelcome();
-  else if (S.view==='log')             view = renderLog();
-  else                                 view = renderDashboard();
+  try {
+    if (!S.player || S.view==='welcome') view = renderWelcome();
+    else if (S.view==='log')             view = renderLog();
+    else                                 view = renderDashboard();
+  } catch(err) {
+    console.error('Render error:', err);
+    view = el('div',{style:'padding:24px;color:var(--red);font-size:14px'},
+      el('div',{style:'font-size:18px;margin-bottom:8px'},'⚠️ Something went wrong'),
+      el('div',{style:'font-family:var(--mono);color:var(--text3)'},err.message||'Unknown error'),
+      el('button',{class:'btn btn-ghost',style:'margin-top:16px',onclick:()=>SS({view:'welcome',loading:false})},'← Go Home')
+    );
+  }
 
   root.appendChild(view);
   if (S.confirm) root.appendChild(renderConfirm());
 }
 
-// ── INIT ─────────────────────────────────────────────────────
-
+// ── INIT ───────────────────────────────────────────────
 async function init() {
   render();
   await initDB();
@@ -1243,13 +1086,13 @@ async function init() {
 
   if (IS_CONFIGURED && savedId && savedName) {
     SS({loading:true});
-    const entries    = await dbFetchEntries(savedId);
-    const allEntries = await dbFetchAllEntries();
-    const players    = await dbFetchPlayers();
-    const allPlayers = await dbFetchAllPlayers();
-    SS({player:{id:savedId,name:savedName}, entries, allEntries, players, allPlayers, view:'dashboard', loading:false});
-  } else {
-    render();
+    try {
+      const data = await refreshAll(savedId);
+      SS({player:{id:savedId, name:savedName}, ...data, view:'dashboard', loading:false});
+    } catch(e) {
+      console.error('Init failed:', e);
+      SS({loading:false});
+    }
   }
 }
 
