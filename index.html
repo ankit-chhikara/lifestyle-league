@@ -463,6 +463,12 @@ async function dbFetchAllEntries() {
   return data || [];
 }
 
+async function dbFetchAllPlayers() {
+  if (!db) return [];
+  const {data} = await db.from('ll_players').select('*');
+  return data || [];
+}
+
 async function dbCreatePlayer(name, currency='₹') {
   if (!db) return null;
   const {data,error} = await db.from('ll_players').insert({name,currency}).select().single();
@@ -494,29 +500,30 @@ async function dbDeletePlayer(playerId) {
 // ── STATE ────────────────────────────────────────────────────
 
 let S = {
-  view: 'welcome',   // welcome | dashboard | log | manage
+  view: 'welcome',
   tab: 'home',
   player: null,
   players: [],
-  entries: [],       // current player's entries
-  allEntries: [],    // everyone's entries (for leaderboard)
+  allPlayers: [],
+  entries: [],
+  allEntries: [],
   loading: false,
   logForm: {
     month: thisMonth(),
     income: '', fixed_costs: '', savings: '',
-    adj_savings: '',        // after credit card adj
+    adj_savings: '',
     pu_streak: false,
     pu_hustle: false,
     pu_resilience: false,
     investor_bonus: false,
     debt_killer_bonus: false,
     interest_paid: false,
-    token_used: '',         // '' | 'health' | 'yearly' | 'bigbuy1' | 'bigbuy2'
+    token_used: '',
     sabbatical_mode: false,
     sabbatical_pct: '',
     notes: '',
   },
-  confirm: null,   // {msg, onYes}
+  confirm: null,
 };
 
 function SS(patch) {
@@ -535,7 +542,8 @@ async function doJoin(name, currency) {
     localStorage.setItem('ll_pname', p.name);
     const entries = await dbFetchEntries(p.id);
     const allEntries = await dbFetchAllEntries();
-    SS({player:p, entries, allEntries, view:'dashboard', loading:false});
+    const allPlayers = await dbFetchAllPlayers();
+    SS({player:p, entries, allEntries, allPlayers, view:'dashboard', loading:false});
     showToast(`💰 Welcome, ${p.name}!`);
   } catch(e) { showToast('❌ '+e.message,true); SS({loading:false}); }
 }
@@ -544,8 +552,9 @@ async function doResume(id, name) {
   SS({loading:true});
   const entries = await dbFetchEntries(id);
   const allEntries = await dbFetchAllEntries();
+  const allPlayers = await dbFetchAllPlayers();
   const players = await dbFetchPlayers();
-  SS({player:{id,name}, players, entries, allEntries, view:'dashboard', loading:false});
+  SS({player:{id,name}, players, allPlayers, entries, allEntries, view:'dashboard', loading:false});
 }
 
 async function doLogEntry() {
@@ -584,8 +593,9 @@ async function doLogEntry() {
     await dbInsertEntry(entry);
     const entries = await dbFetchEntries(player.id);
     const allEntries = await dbFetchAllEntries();
+    const allPlayers = await dbFetchAllPlayers();
     const pts = calcPoints(entry);
-    SS({entries, allEntries, view:'dashboard', tab:'home', loading:false,
+    SS({entries, allEntries, allPlayers, view:'dashboard', tab:'home', loading:false,
       logForm:{...S.logForm, notes:'', pu_streak:false, pu_hustle:false,
         pu_resilience:false, investor_bonus:false, debt_killer_bonus:false,
         interest_paid:false, token_used:'', sabbatical_mode:false, sabbatical_pct:''}});
@@ -598,7 +608,8 @@ async function doDeleteEntry(id) {
   await dbDeleteEntry(id);
   const entries = await dbFetchEntries(S.player.id);
   const allEntries = await dbFetchAllEntries();
-  SS({entries, allEntries, loading:false, confirm:null});
+  const allPlayers = await dbFetchAllPlayers();
+  SS({entries, allEntries, allPlayers, loading:false, confirm:null});
   showToast('✅ Entry deleted');
 }
 
@@ -607,7 +618,8 @@ async function doDeleteAllEntries(pid) {
   await dbDeleteAllEntries(pid);
   const entries = pid===S.player.id ? [] : S.entries;
   const allEntries = await dbFetchAllEntries();
-  SS({entries, allEntries, loading:false, confirm:null});
+  const allPlayers = await dbFetchAllPlayers();
+  SS({entries, allEntries, allPlayers, loading:false, confirm:null});
   showToast('✅ All entries cleared');
 }
 
@@ -621,19 +633,21 @@ async function doDeletePlayer(pid) {
   } else {
     const allEntries = await dbFetchAllEntries();
     const players = await dbFetchPlayers();
-    SS({players, allEntries, loading:false, confirm:null});
+    const allPlayers = await dbFetchAllPlayers();
+    SS({players, allPlayers, allEntries, loading:false, confirm:null});
   }
   showToast('✅ Player removed');
 }
 
 async function doSwitchPlayer(pid) {
-  const all = await dbFetchPlayers();
+  const all = await dbFetchAllPlayers();
   const p = all.find(x=>x.id===pid);
   if (!p) return;
   localStorage.setItem('ll_pid', p.id);
   localStorage.setItem('ll_pname', p.name);
   const entries = await dbFetchEntries(p.id);
-  SS({player:p, entries, tab:'home'});
+  const allPlayers = await dbFetchAllPlayers();
+  SS({player:p, entries, allPlayers, tab:'home'});
   showToast(`Switched to ${p.name}`);
 }
 
@@ -865,31 +879,26 @@ function renderLog() {
 }
 
 function renderDashboard() {
-  const {player, entries, allEntries, tab} = S;
+  const {player, entries, allEntries, allPlayers, tab} = S;
   const pts    = totalPoints(entries);
   const streak = calcStreak(entries);
   const score  = entries.length ? calcScore(entries[0].savings, entries[0].choice_money) : 0;
   const badges = calcBadges(entries);
 
-  // Build leaderboard
-  const playerIds = [...new Set(allEntries.map(e=>e.player_id))];
-  const lbRaw = playerIds.map(pid => {
-    const pes = allEntries.filter(e=>e.player_id===pid);
-    const firstEntry = pes[0];
+  // Build leaderboard from allPlayers (source of truth for names)
+  const lbRaw = allPlayers.map(p => {
+    const pes = allEntries.filter(e => e.player_id === p.id);
     const ptot = totalPoints(pes);
     const pStreak = calcStreak(pes);
-    const pScore = pes.length ? calcScore(pes[0].savings,pes[0].choice_money) : 0;
+    const pScore = pes.length ? calcScore(pes[0].savings, pes[0].choice_money) : 0;
     return {
-      id: pid,
-      name: firstEntry?.player_name || pid,
+      id: p.id,
+      name: p.name,
       pts: ptot, streak: pStreak,
       months: pes.length, lastScore: pScore,
       badges: calcBadges(pes).length,
     };
-  }).sort((a,b)=>b.pts-a.pts);
-
-  // Enrich with player names (from players table via allEntries)
-  // We store player name on entry at log time — or fallback to id
+  }).sort((a,b) => b.pts - a.pts);
 
   const myLBPos = lbRaw.findIndex(p=>p.id===player.id)+1 || '—';
 
@@ -901,7 +910,7 @@ function renderDashboard() {
       el('div',{class:'muted',style:'font-size:13px'},`#${myLBPos} overall · ${entries.length} months`)
     ),
     el('div',{style:'text-align:right'},
-      el('div',{class:'mono',style:'font-size:28px;color:var(--green);line-height:1'},pts),
+      el('div',{class:'mono',style:'font-size:28px;color:var(--green);line-height:1'},`${pts}`),
       el('div',{class:'dim',style:'font-size:11px;letter-spacing:0.08em'},'TOTAL PTS'),
     )
   );
@@ -984,8 +993,47 @@ function renderDashboard() {
       memberCard.appendChild(row);
     });
 
-    const addBtn = el('button',{style:'display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:8px;cursor:pointer;background:transparent;border:1px dashed var(--border2);color:var(--text3);font-family:var(--sans);font-size:14px',onclick:()=>SS({view:'welcome'})},'+ Add / Switch Player');
-    memberCard.appendChild(addBtn);
+    // Inline add-player form
+    let addOpen = false;
+    const addToggle = el('button',{
+      style:'display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:8px;cursor:pointer;background:transparent;border:1px dashed var(--border2);color:var(--text3);font-family:var(--sans);font-size:14px;margin-top:4px'
+    },'+ Add New Player');
+
+    const addForm = el('div',{style:'display:none;margin-top:10px;padding:14px;background:rgba(46,204,113,0.04);border:1px solid var(--border2);border-radius:10px'});
+    const newNameInp = el('input',{type:'text',placeholder:'New player name...',style:'margin-bottom:10px'});
+    const newCurrSel = el('select',{style:'margin-bottom:10px'});
+    [['₹','₹ Indian Rupee'],['$','$ US Dollar'],['€','€ Euro'],['£','£ GBP']].forEach(([v,l])=>{
+      newCurrSel.appendChild(el('option',{value:v},l));
+    });
+    const addSubmitBtn = el('button',{class:'btn btn-primary',style:'margin-top:4px',onclick:async()=>{
+      const name = newNameInp.value.trim();
+      if (!name) { showToast('Enter a name',true); return; }
+      if (!IS_CONFIGURED) { showToast('Configure Supabase first',true); return; }
+      SS({loading:true});
+      try {
+        const np = await dbCreatePlayer(name, newCurrSel.value);
+        localStorage.setItem('ll_pid', np.id);
+        localStorage.setItem('ll_pname', np.name);
+        const newEntries = await dbFetchEntries(np.id);
+        const allEntries = await dbFetchAllEntries();
+        const allPlayers = await dbFetchAllPlayers();
+        SS({player:np, entries:newEntries, allEntries, allPlayers, loading:false, tab:'home'});
+        showToast(`💰 Switched to ${np.name}`);
+      } catch(e) { showToast('❌ '+e.message,true); SS({loading:false}); }
+    }},'✓ Add & Switch to Player');
+
+    addForm.appendChild(newNameInp);
+    addForm.appendChild(newCurrSel);
+    addForm.appendChild(addSubmitBtn);
+
+    addToggle.onclick = () => {
+      addOpen = !addOpen;
+      addForm.style.display = addOpen ? 'block' : 'none';
+      addToggle.textContent = addOpen ? '✕ Cancel' : '+ Add New Player';
+    };
+
+    memberCard.appendChild(addToggle);
+    memberCard.appendChild(addForm);
 
     return el('div',{},statsRow,ringCard,logCta,badgeCard,memberCard);
   }
@@ -1196,7 +1244,8 @@ async function init() {
     const entries    = await dbFetchEntries(savedId);
     const allEntries = await dbFetchAllEntries();
     const players    = await dbFetchPlayers();
-    SS({player:{id:savedId,name:savedName}, entries, allEntries, players, view:'dashboard', loading:false});
+    const allPlayers = await dbFetchAllPlayers();
+    SS({player:{id:savedId,name:savedName}, entries, allEntries, players, allPlayers, view:'dashboard', loading:false});
   } else {
     render();
   }
